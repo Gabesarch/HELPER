@@ -7,7 +7,7 @@ python-Levenshtein
 tqdm
 pillow
 pydantic==1.8.2
-numpy
+numpy==1.23.1
 pandas
 opencv-python
 vocab

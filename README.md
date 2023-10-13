@@ -43,6 +43,7 @@ This repo contains code and data for running HELPER.
 <li><a href="#Running-the-TfD-evaluation"> Run TEACh TfD </a></li>
 <li><a href="#Ablations"> Ablations </a></li>
 <li><a href="#Ground-truth"> Ground truth </a></li>
+<li><a href="#User-Feedback"> User Feedback </a></li>
 </ul>
 <li><a href="#citation"> Citation </a></li>
 </ul>
@@ -104,10 +105,13 @@ teach_download
 
 ### Model Checkpoints and GPT Embeddings
 To our model on the TEACh dataset, you'll first need the GPT embeddings for example retrieval:
-1. Download GPT embeddings for example retrieval: [here](https://drive.google.com/file/d/1kqZZXdglNICjDlDKygd19JyyBzkkk-UL/view?usp=sharing). Place them in `./data` folder (or in a desired foldered and set --gpt_embedding_dir argument). 
+1. Download GPT embeddings for example retrieval: [here](https://drive.google.com/file/d/1kqZZXdglNICjDlDKygd19JyyBzkkk-UL/view?usp=sharing). Unzip it to get the gpt_embedding folder in `./data` folder (or in a desired foldered and set --gpt_embedding_dir argument). 
 Alternatively, you can download the file with gdown (`pip install gdown`): 
 ```bash
+cd data
 gdown 1kqZZXdglNICjDlDKygd19JyyBzkkk-UL
+unzip gpt_embeddings.zip
+rm gpt_embeddings.zip
 ```
 
 TO run our model with estimated depth and segmentation, download the SOLQ and ZoeDepth checkpoints:
@@ -115,12 +119,14 @@ TO run our model with estimated depth and segmentation, download the SOLQ and Zo
 2. Download SOLQ checkpoint: [here](https://drive.google.com/file/d/1hTCtTuygPCJnhAkGeVPzWGHiY3PHNE2j/view?usp=sharing). Place it in the `./checkpoints` folder (or anywhere you want and specify the path with `--solq_checkpoint`). 
 Alternatively, you can download the file with gdown (`pip install gdown`): 
 ```bash
+cd checkpoints
 gdown 1hTCtTuygPCJnhAkGeVPzWGHiY3PHNE2j
 ```
 
 3. Download ZoeDepth checkpoint: [here](https://drive.google.com/file/d/1gMe8_5PzaNKWLT5OP-9KKEYhbNxRjk9F/view?usp=drive_link). Place it in the `./checkpoints` folder (or anywhere you want and specify the path with `--zoedepth_checkpoint`). (Also make sure you clone the ZoeDepth repo: `git clone https://github.com/isl-org/ZoeDepth.git`)
 Alternatively, you can download the file with gdown (`pip install gdown`): 
 ```bash
+cd checkpoints
 gdown 1gMe8_5PzaNKWLT5OP-9KKEYhbNxRjk9F
 ```
 
@@ -172,7 +178,10 @@ python main.py \
  ```
 Change split to `--split valid_seen` to evaluate validation seen set. 
 
-#### Movie generation:
+#### Metrics
+All metrics will be saved to `./output/metrics/{set_name}`. Metrics and videos will also automatically be logged to wandb.
+
+#### Movie generation
 To create movies of the agent, append `--create_movie` to the arguments. This will by default create a movie for every episode rendered to `./output/movies`. To change the episode frequency of logging, alter `--log_every` (e.g., `--log_every 10` to render videos every 10 episodes). To remove the map visualization, append `--remove_map_vis` to the arguments. This can speed up the episode since rendering the map visual can slow down episodes.
 
 ### Ablations
@@ -191,6 +200,9 @@ The following arguments can be added to run with ground truth:
 4. GT error feedback `--use_GT_error_feedback`.
 5. GT constraint check using controller metadata `--use_GT_constraint_checks`.
 6. Increase max API fails `--max_api_fails {MAX_FAILS}`.
+
+### User Feedback
+To run with user feedback, add `--use_progress_check`. Two additional metric files (for feedback query 1 & 2) will be saved to `./output/metrics/{set_name}`.
 
 <!-- ### Remote Server Setup
 To run the Ai2THOR simulator on a headless machine, you must either stat an X-server or use Ai2THOR's new headless mode. 
