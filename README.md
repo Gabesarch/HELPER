@@ -8,7 +8,11 @@
 <ul>
 <li><a href="#installation"> Installation </a></li>
 <li><a href="#dataset"> Dataset </a></li>
-<li><a href="#running-full-pipeline-with-GT-perception"> Running Pipeline </a></li>
+<li><a href="#Running-TEACh-benchmark"> Running HELPER on TEACh </a></li><ul>
+<li><a href="#Running-the-TfD-evaluation"> Run TEACh TfD </a></li>
+<li><a href="#Ablations"> Ablations </a></li>
+<li><a href="#Ground-truth"> Ground truth </a></li>
+</ul>
 <li><a href="#citation"> Citation </a></li>
 </ul>
 </div>
@@ -89,6 +93,7 @@ python get_embedding_examples.
 
 ## Running TEACh benchmark
 
+### Running the TfD evaluation
 1. (if required) Start x server.
 if an X server is not already running on your machine. First, open a screen with the desired node, and run the following to open an x server on that node:
 ```bash
@@ -128,8 +133,16 @@ python main.py \
  ```
 Change split to `--split valid_seen` to evaluate validation seen set. 
 
-### Movie generation:
+#### Movie generation:
 To create movies of the agent, append `--create_movie` to the arguments. This will by default create a movie for every episode rendered to `./output/movies`. To change the episode frequency of logging, alter `--log_every` (e.g., `--log_every 10` to render videos every 10 episodes). To remove the map visualization, append `--remove_map_vis` to the arguments. This can speed up the episode since rendering the map visual can slow down episodes.
+
+### Ablations
+The following arguments can be removed to run the ablations:
+1. Remove memory augmented prompting. Add argument `--ablate_example_retrieval`.
+2. Remove LLM search (locator) (only random). Remove `--use_llm_search`.
+3. Remove constraint check (inspector). Remove `--use_constraint_check`.
+4. Remove error correction (rectifier). Remove `--run_error_correction_llm`.
+5. Change openai model type. Change `--openai_model` argument (e.g., `--openai_model gpt-3.5-turbo`).
 
 ### Ground truth
 The following arguments can be added to run with ground truth:
@@ -139,14 +152,6 @@ The following arguments can be added to run with ground truth:
 4. GT error feedback `--use_GT_error_feedback`.
 5. GT constraint check using controller metadata `--use_GT_constraint_checks`.
 6. Increase max API fails `--max_api_fails {MAX_FAILS}`.
-
-### Ablations
-The following arguments can be removed to run the ablations:
-1. Remove memory augmented prompting. Add argument `--ablate_example_retrieval`.
-2. Remove LLM search (locator) (only random). Remove `--use_llm_search`.
-3. Remove constraint check (inspector). Remove `--use_constraint_check`.
-4. Remove error correction (rectifier). Remove `--run_error_correction_llm`.
-5. Change openai model type. Change `--openai_model` argument (e.g., `--openai_model gpt-3.5-turbo`).
 
 <!-- ### Remote Server Setup
 To run the Ai2THOR simulator on a headless machine, you must either stat an X-server or use Ai2THOR's new headless mode. 
