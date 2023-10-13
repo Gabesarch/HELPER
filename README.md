@@ -39,7 +39,6 @@ This repo contains code and data for running HELPER.
 <li><a href="#TEACh-Dataset"> TEACh dataset </a></li>
 <li><a href="#Model-Checkpoints-and-GPT-Embeddings"> Model Checkpoints and GPT Embeddings</a></li>
 </ul>
-<li><a href="#dataset"> Dataset </a></li>
 <li><a href="#Running-TEACh-benchmark"> Running HELPER on TEACh </a></li><ul>
 <li><a href="#Running-the-TfD-evaluation"> Run TEACh TfD </a></li>
 <li><a href="#Ablations"> Ablations </a></li>
@@ -192,7 +191,17 @@ To run the Ai2THOR simulator on a headless machine, you must either stat an X-se
 To start an X-server with any of the scripts, you can simply append `--startx` to the arguments. You can specify the X-server port use the `--server_port` argument.
 Alternatively, you can use [Ai2THOR's new headless rendering](https://ai2thor.allenai.org/ithor/documentation/#headless-setup) by appending `--do_headless_rendering` to the arguments.  -->
 
-<!-- # Citation
+# Citation
 If you like this paper, please cite us:
 ```
-``` -->
+@proceedings{findings-2023-findings-association-linguistics-emnlp,
+    title = "Findings of the Association for Computational Linguistics: EMNLP 2023",
+    editor = "Sarch, Gabriel  and
+      Wu, Yue  and
+      Tarr, Michael and
+      Fragkiadaki, Katerina",
+    month = dec,
+    year = "2023",
+    publisher = "Association for Computational Linguistics",
+}
+```
