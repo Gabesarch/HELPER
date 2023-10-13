@@ -1,0 +1,13 @@
+- Input:
+Failed subgoal:
+target_fridge = InteractionObject("Fridge")
+target_fridge.toggle_on()
+Execution error: object is not toggleable. Object cannot be turned on or off.
+Input dialogue: <Commander> Get a tomato from the fridge.
+- Output:
+'''
+Explain: The agent attempted to toggle on the fridge which cannot be toggled. The agent should skip this step.
+
+Plan:
+do_nothing()
+'''

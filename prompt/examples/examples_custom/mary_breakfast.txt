@@ -1,0 +1,43 @@
+dialogue: <Driver> what should i do. <Commander> Make me breakfast. The name of this breakfast is called the Mary breakfast. The breakfast has a mug of coffee, and two slices of toast on a clean plate.
+# instantiate objects
+target_mug = InteractionObject("Mug", "Mug")
+target_coffee = InteractionObject("CoffeeMachine", "CoffeeMachine")
+target_bread = InteractionObject("Bread", "Bread")
+target_knife = InteractionObject("Knife", "Knife")
+target_toaster = InteractionObject("Toaster", "Toaster")
+target_plate = InteractionObject("Plate", "Plate")
+
+# get mug
+target_mug.go_to()
+target_mug.pickup()
+
+# get coffee
+target_coffee.go_to()
+target_mug.place(target_coffee)
+target_coffee.toggle_on()
+target_coffee.toggle_off()
+
+# get bread
+target_bread.go_to()
+target_knife.go_to()
+target_knife.pickup()
+target_bread.slice()
+target_knife.put_down()
+target_bread_slice1 = InteractionObject("BreadSliced", "BreadSliced")
+target_bread_slice2 = InteractionObject("BreadSliced", "BreadSliced")
+
+# get toaster
+target_toaster.go_to()
+target_bread_slice1.pickup_and_place(target_toaster)
+target_bread_slice2.pickup_and_place(target_toaster)
+target_toaster.toggle_on()
+target_toaster.toggle_off()
+
+# get plate
+target_plate.go_to()
+target_plate.clean()
+target_plate.put_down()
+
+# place toast on plate
+target_bread_slice1.pickup_and_place(target_plate)
+target_bread_slice2.pickup_and_place(target_plate)

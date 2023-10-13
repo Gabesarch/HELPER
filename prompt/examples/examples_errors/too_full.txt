@@ -1,0 +1,15 @@
+- Input:
+Failed subgoal:
+target_mug = InteractionObject("Mug")
+target_sink = InteractionObject("Sink")
+target_mug.place(target_sink)
+Execution error: No valid positions to place object found. The receptacle is too full or too small to contain the held item.
+Input dialogue: <Commander> Wash the mug in the sink.
+- Output:
+'''
+Explain: The agent attempted to place the mug in the sink, but the sink it too full. The agent should first empty out the sink
+
+Plan:
+target_sink = InteractionObject("Sink")
+target_sink.empty()
+'''

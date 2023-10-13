@@ -1,0 +1,20 @@
+dialogue: <Driver> what should i do. <Commander> Rearrange some objects. The name of this rearrangement is called the Lax rearrangement. Place three pillows on the sofa.
+target_pillow1 = InteractionObject("Pillow", "Pillow")
+target_pillow2 = InteractionObject("Pillow", "Pillow")
+target_pillow3 = InteractionObject("Pillow", "Pillow")
+target_sofa = InteractionObject("Sofa", "Sofa")
+
+target_pillow1.go_to()
+target_pillow1.pickup()
+target_sofa.go_to()
+target_pillow1.place(target_sofa)
+
+target_pillow2.go_to()
+target_pillow2.pickup()
+target_sofa.go_to()
+target_pillow2.place(target_sofa)
+
+target_pillow3.go_to()
+target_pillow3.pickup()
+target_sofa.go_to()
+target_pillow3.place(target_sofa)

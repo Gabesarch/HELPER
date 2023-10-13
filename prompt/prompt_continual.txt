@@ -1,0 +1,22 @@
+You are a helpful assistant that writes a description of the given python script written in python code that completes a task described in natural langauge.
+1) Try to summarize the function in no more than 6 sentences.
+2) Your response should be a single line of text.
+
+For example, given the following input python script and dialogue instructions:
+Dialogue: '<Driver> Hi. What should I do today? <Commander> hello please put pillow on sofa <Driver> what is next? <Commander> pillow on desk <Commander> on <Commander> sorry, pillow on desk needs to go on sofa <Driver> Anything else? <Commander> awesome, done '
+Python script:
+target_pillow1 = InteractionObject("Pillow", "Pillow")
+target_pillow2 = InteractionObject("Pillow", "Pillow")
+target_sofa = InteractionObject("Sofa", "Sofa")
+target_pillow1.pickup_and_place(target_sofa)
+target_pillow2.pickup_and_place(target_sofa)
+
+your output:
+The function is about placing two pillows on the sofa. The agent picks up one pillow and places it on the sofa. Then, the agent picks up a second pillow and places it on the sofa.
+
+Write a description for the following dialogue and python script: 
+Dialogue: {dialogue}
+Python script:
+{program}
+
+your output:

@@ -1,0 +1,18 @@
+- Input:
+Failed subgoal:
+target_knife = InteractionObject("Knife")
+target_countertop = InteractionObject("CounterTop")
+target_knife.place(target_countertop)
+Execution error: CounterTop|+00.69|+00.95|-02.48 is too far away to be interacted with. That object is too far away to interact with.
+Input dialogue: <Commander> Slice the tomato.
+- Output:
+'''
+Explain: The countertop is too far away from the agent to place the knife on it. The agent should move closer to the countertop and try again.
+
+Plan:
+agent = AgentCorrective()
+agent.move_closer()
+target_knife = InteractionObject("Knife")
+target_countertop = InteractionObject("CounterTop")
+target_knife.place(target_countertop)
+'''

@@ -1,0 +1,49 @@
+dialogue: <Driver> what should i do. <Commander> Make me a sandwich. The name of this sandwich is called the Larry sandwich. The sandwich has two slices of toast, 3 slices of tomato, and 3 slice of lettuce on a clean plate.
+Python script:
+# instantiate objects
+target_toast1 = InteractionObject("Toast", "Toast")
+target_toast2 = InteractionObject("Toast", "Toast")
+target_tomato1 = InteractionObject("Tomato", "Tomato")
+target_tomato2 = InteractionObject("Tomato", "Tomato")
+target_lettuce = InteractionObject("Lettuce", "Lettuce")
+target_plate = InteractionObject("Plate", "Plate")
+
+# place toast on plate
+target_plate.go_to()
+target_plate.clean()
+target_plate.put_down()
+target_toast1.pickup_and_place(target_plate)
+target_toast2.pickup_and_place(target_plate)
+
+# slice tomato
+target_knife = InteractionObject("Knife", "Knife")
+target_knife.go_to()
+target_knife.pickup()
+target_tomato1.slice()
+target_tomato2.slice()
+target_knife.put_down()
+
+# place tomato slices on plate
+target_tomato_slice1 = InteractionObject("TomatoSliced", "TomatoSliced")
+target_tomato_slice2 = InteractionObject("TomatoSliced", "TomatoSliced")
+target_tomato_slice3 = InteractionObject("TomatoSliced", "TomatoSliced")
+target_tomato_slice1.pickup_and_place(target_plate)
+target_tomato_slice2.pickup_and_place(target_plate)
+target_tomato_slice3.pickup_and_place(target_plate)
+
+# slice lettuce
+target_knife.go_to()
+target_knife.pickup()
+target_lettuce.slice()
+target_knife.put_down()
+
+# place lettuce slice on plate
+target_lettuce_slice1 = InteractionObject("LettuceSliced", "LettuceSliced")
+target_lettuce_slice2 = InteractionObject("LettuceSliced", "LettuceSliced")
+target_lettuce_slice3 = InteractionObject("LettuceSliced", "LettuceSliced")
+target_lettuce_slice1.pickup_and_place(target_plate)
+target_lettuce_slice2.pickup_and_place(target_plate)
+target_lettuce_slice3.pickup_and_place(target_plate)
+
+# done
+print("Done making the Gabe sandwich!")

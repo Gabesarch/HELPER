@@ -1,0 +1,32 @@
+dialogue: <Driver> what should i do. <Commander> Make me a salad. The name of this salad is called the Dax salad. The salad has two slices of cooked potato. You'll need to cook the potato on the stove. The salad also has a slice of lettuce and a slice of tomato. Put all components on a clean plate.
+target_potato = InteractionObject("Potato", "Potato")
+target_stove = InteractionObject("StoveBurner", "StoveBurner")
+target_pan = InteractionObject("Pan", "Pan")
+target_stove.go_to()
+target_stove.toggle_on()
+target_potato.go_to()
+target_potato.pickup()
+target_potato.place(target_pan) # place the potato on the pan
+target_stove.toggle_off() # turn off the stove
+target_potato.pickup() # pick up the cooked potato
+target_potato.put_down() 
+target_knife = InteractionObject("Knife", "Knife")
+target_knife.pickup()
+target_potato.go_to()
+target_potato.slice()
+target_lettuce = InteractionObject("Lettuce", "Lettuce")
+target_lettuce.go_to()
+target_lettuce.pickup()
+target_tomato = InteractionObject("Tomato", "Tomato")
+target_tomato.go_to()
+target_tomato.slice()
+target_tomato_slice1 = InteractionObject("TomatoSliced", "TomatoSliced") # instantiate a tomato slice object after slicing tomato
+target_lettuce_slice1 = InteractionObject("LettuceSliced", "LettuceSliced") # instantiate a lettuce slice object after slicing lettuce
+target_potato_slice1 = InteractionObject("PotatoSliced", "PotatoSliced") 
+target_potato_slice2 = InteractionObject("PotatoSliced", "PotatoSliced") 
+target_plate = InteractionObject("Plate", "Plate")
+target_plate.clean()
+target_potato_slice1.pickup_and_place(target_plate) # pick up the potato slice and place it on the plate
+target_potato_slice2.pickup_and_place(target_plate) # pick up the potato slice and place it on the plate
+target_lettuce_slice1.pickup_and_place(target_plate) # pick up the lettuce slice and place it on the plate
+target_tomato_slice1.pickup_and_place(target_plate) # pick up the tomato slice and place it on the plate

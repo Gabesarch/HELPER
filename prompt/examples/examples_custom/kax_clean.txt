@@ -1,0 +1,11 @@
+dialogue: <Driver> what should i do. <Commander> Clean some objects. The name of this cleaning is called the Kax cleaning. Clean a mug and a pan.
+target_mug = InteractionObject("Mug", "Mug")
+target_pan = InteractionObject("Pan", "Pan")
+target_mug.go_to()
+target_mug.pickup()
+target_mug.clean()
+target_mug.put_down()
+target_pan.go_to()
+target_pan.pickup()
+target_pan.clean()
+target_pan.put_down()

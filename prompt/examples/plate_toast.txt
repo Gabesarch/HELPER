@@ -1,0 +1,16 @@
+dialogue: <Driver> hi, what is task. <Commander> make a plate of toast. <Commander> bread in the sink. <Driver> knife. <Commander> on the chair beside the table. <Commander> clean the plate. <Driver> there is a clean one, do i need to clean the other one. <Commander> you can use the clean one. <Driver> done. <Commander> good job. <Driver> :).
+Python script:
+target_bread = InteractionObject("Bread", landmark = "Sink")
+target_knife = InteractionObject("Knife", landmark = "Chair")
+target_knife.go_to() # first get knife
+target_knife.pickup()
+target_bread.go_to()
+target_bread.slice() # slice bread using knife
+target_bread_slice1 = InteractionObject("BreadSliced", attributes = ["toasted"]) # instantiate a bread slice object after slicing bread with desired toasted attribute
+target_knife.put_down() # put down the knife to free up the agent's hand
+target_bread_slice1.toast() # toast bread slice
+# place toast on plate
+target_plate = InteractionObject("Plate", attributes = ["clean"]) # want clean plate
+target_plate.clean()
+target_plate.put_down()
+target_bread_slice1.pickup_and_place(target_plate) # pick up the toasted bread slice and place it on the plate

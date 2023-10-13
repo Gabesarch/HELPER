@@ -1,0 +1,24 @@
+dialogue: <Driver> what should i do. <Commander> Clean some objects. The name of this cleaning is called the Gax cleaning. Clean two plates and two cups.
+target_plate1 = InteractionObject("Plate", "plate")
+target_plate1.go_to()
+target_plate1.pickup()
+target_plate1.clean()
+target_plate1.put_down()
+
+target_plate2 = InteractionObject("Plate", "plate")
+target_plate2.go_to()
+target_plate2.pickup()
+target_plate2.clean()
+target_plate2.put_down()
+
+target_cup1 = InteractionObject("Cup", "cup")
+target_cup1.go_to()
+target_cup1.pickup()
+target_cup1.clean()
+target_cup1.put_down()
+
+target_cup2 = InteractionObject("Cup", "cup")
+target_cup2.go_to()
+target_cup2.pickup()
+target_cup2.clean()
+target_cup2.put_down()

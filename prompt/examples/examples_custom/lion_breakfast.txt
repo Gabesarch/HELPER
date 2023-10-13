@@ -1,0 +1,52 @@
+dialogue: <Driver> what should i do. <Commander> Make me breakfast. The name of this breakfast is called the Lion breakfast. The breakfast has a mug of coffee, and four slices of tomato on a clean plate.
+# instantiate objects
+target_mug = InteractionObject("Mug", "Mug")
+target_coffee = InteractionObject("CoffeeMachine", "CoffeeMachine")
+target_tomato = InteractionObject("Tomato", "Tomato")
+target_plate = InteractionObject("Plate", "Plate")
+target_knife = InteractionObject("Knife", "Knife")
+
+# get mug
+target_mug.go_to()
+target_mug.pickup()
+
+# get coffee
+target_coffee.go_to()
+target_mug.place(target_coffee)
+target_coffee.toggle_on()
+target_coffee.toggle_off()
+
+# get tomato
+target_tomato.go_to()
+target_tomato.pickup()
+
+# get plate
+target_plate.go_to()
+target_plate.clean() # clean plate
+target_plate.put_down() # put down plate
+
+# get knife
+target_knife.go_to()
+target_knife.pickup()
+
+# slice tomato
+target_tomato.slice() # slice tomato using knife
+target_knife.put_down() # put down knife
+target_tomato_slice1 = InteractionObject("TomatoSliced", "TomatoSliced") # instantiate a tomato slice object after slicing tomato
+target_tomato_slice1.pickup_and_place(target_plate) # pick up the tomato slice and place it on the plate
+target_tomato_slice2 = InteractionObject("TomatoSliced", "TomatoSliced") # instantiate a second tomato slice object after slicing tomato
+target_tomato_slice2.pickup_and_place(target_plate) # pick up the second tomato slice and place it on the plate
+target_tomato_slice3 = InteractionObject("TomatoSliced", "TomatoSliced") # instantiate a third tomato slice object after slicing tomato
+target_tomato_slice3.pickup_and_place(target_plate) # pick up the third tomato slice and place it on the plate
+target_tomato_slice4 = InteractionObject("TomatoSliced", "TomatoSliced") # instantiate a fourth tomato slice object after slicing tomato
+target_tomato_slice4.pickup_and_place(target_plate) # pick up the fourth tomato slice and place it on the plate
+
+# get coffee
+target_coffee.go_to()
+target_mug.pickup() # pick up mug
+target_coffee.put_down() # put down coffee machine
+target_mug.go_to() # go to mug
+target_mug.place(target_plate) # place mug on plate
+
+# done
+print("Done!")

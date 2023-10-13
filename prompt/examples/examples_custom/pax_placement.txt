@@ -1,0 +1,26 @@
+dialogue: <Driver> what should i do. <Commander> Rearrange some objects. The name of this rearrangement is called the Pax rearrangement. Place two pencils and two pens on the desk.
+target_pencil1 = InteractionObject("Pencil", "Pencil")
+target_pencil2 = InteractionObject("Pencil", "Pencil")
+target_pen1 = InteractionObject("Pen", "Pen")
+target_pen2 = InteractionObject("Pen", "Pen")
+target_desk = InteractionObject("Desk", "Desk")
+
+target_pencil1.go_to()
+target_pencil1.pickup()
+target_desk.go_to()
+target_pencil1.place(target_desk)
+
+target_pencil2.go_to()
+target_pencil2.pickup()
+target_desk.go_to()
+target_pencil2.place(target_desk)
+
+target_pen1.go_to()
+target_pen1.pickup()
+target_desk.go_to()
+target_pen1.place(target_desk)
+
+target_pen2.go_to()
+target_pen2.pickup()
+target_desk.go_to()
+target_pen2.place(target_desk)

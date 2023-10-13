@@ -1,0 +1,16 @@
+- Input:
+Failed subgoal:
+target_knife = InteractionObject("Knife")
+target_knife.pickup()
+Execution error: Knife|-01.70|+01.71|+04.01 is not interactable and (perhaps it is occluded by something). An object is blocking you from interacting with the selected object.
+Input dialogue: <Commander> Slice the tomato.
+- Output:
+'''
+Explain: Something is occluding the knife preventing it from being picked up by the agent. The agent should move to a different viewpoint and try again.
+
+Plan:
+agent = AgentCorrective()
+agent.move_alternate_viewpoint()
+target_knife = InteractionObject("Knife")
+target_knife.pickup()
+'''
