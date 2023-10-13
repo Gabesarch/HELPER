@@ -10,11 +10,9 @@ tmp/*
 *.avi
 images/
 *.mp4
-utils/parser_solq.py
 *.zip
 *DELETE*
 metrics/*
-alfred/data/
 wandb
 SOLQ/models/ops/build
 SOLQ/models/ops/dist

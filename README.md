@@ -61,12 +61,6 @@ git clone https://github.com/Gabesarch/HELPER.git
 conda create -n helper python=3.8
 ```
 
-You also will want to set CUDA paths. For example (on our tested machine with CUDA 11.1): 
-```bash
-export CUDA_HOME="/opt/cuda/11.1.1"
-export LD_LIBRARY_PATH="${CUDA_HOME}/lib64:$LD_LIBRARY_PATH"
-```
-
 **(2)** Install [PyTorch](https://pytorch.org/get-started/locally/) with the CUDA version you have. For example, run the following for CUDA 11.1: 
 ```bash
 pip install torch==1.10.0+cu111 torchvision==0.11.0+cu111 torchaudio==0.10.0 -f https://download.pytorch.org/whl/torch_stable.html
@@ -110,13 +104,25 @@ teach_download
 
 ### Model Checkpoints and GPT Embeddings
 To our model on the TEACh dataset, you'll first need the GPT embeddings for example retrieval:
-1. Download GPT embeddings for example retrieval: [here](https://drive.google.com/file/d/1kqZZXdglNICjDlDKygd19JyyBzkkk-UL/view?usp=sharing). Place them in ./dataset folder (or in a desired foldered and set --gpt_embedding_dir argument).
+1. Download GPT embeddings for example retrieval: [here](https://drive.google.com/file/d/1kqZZXdglNICjDlDKygd19JyyBzkkk-UL/view?usp=sharing). Place them in `./data` folder (or in a desired foldered and set --gpt_embedding_dir argument). 
+Alternatively, you can download the file with gdown (`pip install gdown`): 
+```bash
+gdown 1kqZZXdglNICjDlDKygd19JyyBzkkk-UL
+```
 
 TO run our model with estimated depth and segmentation, download the SOLQ and ZoeDepth checkpoints:
 
 2. Download SOLQ checkpoint: [here](https://drive.google.com/file/d/1hTCtTuygPCJnhAkGeVPzWGHiY3PHNE2j/view?usp=sharing). Place it in the `./checkpoints` folder (or anywhere you want and specify the path with `--solq_checkpoint`). 
+Alternatively, you can download the file with gdown (`pip install gdown`): 
+```bash
+gdown 1hTCtTuygPCJnhAkGeVPzWGHiY3PHNE2j
+```
 
 3. Download ZoeDepth checkpoint: [here](https://drive.google.com/file/d/1gMe8_5PzaNKWLT5OP-9KKEYhbNxRjk9F/view?usp=drive_link). Place it in the `./checkpoints` folder (or anywhere you want and specify the path with `--zoedepth_checkpoint`). (Also make sure you clone the ZoeDepth repo: `git clone https://github.com/isl-org/ZoeDepth.git`)
+Alternatively, you can download the file with gdown (`pip install gdown`): 
+```bash
+gdown 1gMe8_5PzaNKWLT5OP-9KKEYhbNxRjk9F
+```
 
 <!-- 2. Generate the GPT embeddings for retrieval
 ```bash
@@ -153,7 +159,7 @@ To run the agent with all modules and estimated perception on TfD validation uns
 python main.py \
  --mode teach_eval_tfd \
  --split valid_unseen \
- --gpt_embedding_dir ./dataset/gpt_embeddings \
+ --gpt_embedding_dir ./data/gpt_embeddings \
  --teach_data_dir PATH_TO_TEACH_DATASET \
  --server_port X_SERVER_PORT_HERE \
  --episode_in_try_except \
