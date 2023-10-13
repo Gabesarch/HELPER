@@ -6,7 +6,11 @@
 
 <div class="toc">
 <ul>
-<li><a href="#installation"> Installation </a></li>
+<li><a href="#installation"> Installation </a></li><ul>
+<li><a href="#Environment"> Environment </a></li>
+<li><a href="#TEACh-Dataset"> TEACh dataset </a></li>
+<li><a href="#Model-Checkpoints-and-GPT-Embeddings"> Model Checkpoints and GPT Embeddings</a></li>
+</ul>
 <li><a href="#dataset"> Dataset </a></li>
 <li><a href="#Running-TEACh-benchmark"> Running HELPER on TEACh </a></li><ul>
 <li><a href="#Running-the-TfD-evaluation"> Run TEACh TfD </a></li>
@@ -18,6 +22,8 @@
 </div>
 
 ## Installation 
+
+### Environment
 
 **(1)** Start by cloning the repository:
 ```bash
@@ -69,13 +75,13 @@ cd ZoeDepth
 git checkout edb6daf45458569e24f50250ef1ed08c015f17a7
 ```
 
-## TEACh Dataset
+### TEACh Dataset
 1. Download the TEACh dataset following the instructions in the [TEACh repo](https://github.com/alexa/teach)
 ```bash
 teach_download 
 ```
 
-## Checkpoints and GPT Embeddings
+### Model Checkpoints and GPT Embeddings
 To our model on the TEACh dataset, you'll first need the GPT embeddings for example retrieval:
 1. Download GPT embeddings for example retrieval: [here](https://drive.google.com/file/d/1kqZZXdglNICjDlDKygd19JyyBzkkk-UL/view?usp=sharing). Place them in ./dataset folder (or in a desired foldered and set --gpt_embedding_dir argument).
 
@@ -127,8 +133,8 @@ python main.py \
  --use_llm_search \
  --use_constraint_check \
  --run_error_correction_llm \
- --zoedepth_checkpoint ./checkpoints/model-00020000.pth \
- --solq_checkpoint ./checkpoints/model-00020000.pth \
+ --zoedepth_checkpoint ./checkpoints/ZOEDEPTH-model-00015000.pth \
+ --solq_checkpoint ./checkpoints/SOLQ-model-00023000.pth \
  --set_name HELPER_teach_tfd_validunseen
  ```
 Change split to `--split valid_seen` to evaluate validation seen set. 
