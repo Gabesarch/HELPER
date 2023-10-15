@@ -40,10 +40,11 @@ This repo contains code and data for running HELPER.
 <li><a href="#Model-Checkpoints-and-GPT-Embeddings"> Model Checkpoints and GPT Embeddings</a></li>
 </ul>
 <li><a href="#Running-TEACh-benchmark"> Running HELPER on TEACh </a></li><ul>
-<li><a href="#Running-the-TfD-evaluation"> Run TEACh TfD </a></li>
+<li><a href="#Running-the-EDH-evaluation"> Run TEACh EDH </a></li>
 <li><a href="#Ablations"> Ablations </a></li>
 <li><a href="#Ground-truth"> Ground truth </a></li>
-<li><a href="#User-Feedback"> User Feedback </a></li>
+<li><a href="#Running-the-TfD-evaluation"> Run TEACh TfD </a></li>
+
 </ul>
 <li><a href="#citation"> Citation </a></li>
 </ul>
@@ -200,9 +201,6 @@ The following arguments can be added to run with ground truth:
 4. GT error feedback `--use_GT_error_feedback`.
 5. GT constraint check using controller metadata `--use_GT_constraint_checks`.
 6. Increase max API fails `--max_api_fails {MAX_FAILS}`.
-
-### User Feedback
-To run with user feedback, add `--use_progress_check`. Two additional metric files (for feedback query 1 & 2) will be saved to `./output/metrics/{set_name}`.
 
 ### Running the TfD evaluation
 See the `main` branch for how to run the TfD evaluation.
