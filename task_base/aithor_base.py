@@ -6,7 +6,7 @@ from arguments import args
 from argparse import Namespace
 # from tensorboardX import SummaryWriter
 from torch.utils.tensorboard import SummaryWriter 
-from ai2thor_docker.ai2thor_docker.x_server import startx
+from utils.ai2thor_docker.ai2thor_docker.x_server import startx
 import ipdb
 st = ipdb.set_trace
 import utils.dist

@@ -12,7 +12,6 @@ import torch
 from PIL import Image
 from arguments import args
 import sys
-from backend import saverloader
 import os
 import cv2
 import matplotlib.pyplot as plt

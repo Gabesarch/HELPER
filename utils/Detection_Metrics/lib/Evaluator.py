@@ -15,8 +15,8 @@ from collections import Counter
 import matplotlib.pyplot as plt
 import numpy as np
 
-from Detection_Metrics.lib.BoundingBox import *
-from Detection_Metrics.lib.BoundingBoxes import *
+from utils.Detection_Metrics.lib.BoundingBox import *
+from utils.Detection_Metrics.lib.BoundingBoxes import *
 # from utils import *
 
 import ipdb

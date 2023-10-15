@@ -44,6 +44,7 @@ This repo contains code and data for running HELPER.
 <li><a href="#Ablations"> Ablations </a></li>
 <li><a href="#Ground-truth"> Ground truth </a></li>
 <li><a href="#User-Feedback"> User Feedback </a></li>
+<li><a href="#Running-the-EDH-evaluation"> Run TEACh EDH </a></li>
 </ul>
 <li><a href="#citation"> Citation </a></li>
 </ul>
@@ -203,6 +204,9 @@ The following arguments can be added to run with ground truth:
 
 ### User Feedback
 To run with user feedback, add `--use_progress_check`. Two additional metric files (for feedback query 1 & 2) will be saved to `./output/metrics/{set_name}`.
+
+### Running the EDH evaluation
+See the `teach_edh` branch for how to run the TEACh EDH evaluation.
 
 <!-- ### Remote Server Setup
 To run the Ai2THOR simulator on a headless machine, you must either stat an X-server or use Ai2THOR's new headless mode. 

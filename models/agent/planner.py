@@ -1,30 +1,22 @@
 import sys
 import json
-
 import ipdb
 st = ipdb.set_trace
 from arguments import args
-
 from time import sleep
 from typing import List
 import matplotlib.pyplot as plt
 from ai2thor.controller import Controller
-
 from task_base.object_tracker import ObjectTrack
 from task_base.navigation import Navigation
 from task_base.animation_util import Animation
 from task_base.teach_base import TeachTask
-from backend import saverloader
 import pickle
-
 import numpy as np
 import os
-
 import cv2
-
 import csv
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-
 from teach.dataset.dataset import Dataset
 from teach.dataset.definitions import Definitions
 from teach.logger import create_logger
@@ -34,7 +26,6 @@ import torch
 import utils
 import utils.geom
 import logging
-
 from teach.utils import (
     create_task_thor_from_state_diff,
     load_images,
@@ -46,9 +37,7 @@ from teach.eval.compute_metrics import create_new_traj_metrics, evaluate_traj
 from prompt.run_gpt import LLMPlanner
 import copy
 import traceback
-
 from task_base.aithor_base import get_rearrangement_categories
-
 logging.basicConfig(
             level=logging.DEBUG,
             format='%(asctime)s %(levelname)s %(message)s',
@@ -59,12 +48,9 @@ logging.basicConfig(
 from IPython.core.debugger import set_trace
 from PIL import Image
 import wandb
-
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
-
 
 class PlannerController:
     def __init__(self):

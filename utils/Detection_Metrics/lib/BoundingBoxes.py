@@ -1,4 +1,4 @@
-from Detection_Metrics.lib.BoundingBox import *
+from utils.Detection_Metrics.lib.BoundingBox import *
 # from Detection_Metrics.lib.utils import *
 
 
