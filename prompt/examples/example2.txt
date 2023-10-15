@@ -1,11 +1,15 @@
-dialogue: <Commander> I need you to slice the bread using the knife in the fridge. <Commander> And please toast the bread and put it in a bowl.
-Python script:
+Dialogue: <Commander> I need you to slice the bread using the knife in the fridge. <Commander> And please toast the bread and put it in a bowl.
+
+Completed Program:
 target_bread = InteractionObject("Bread")
 target_knife = InteractionObject("Knife", landmark = "Fridge")
 target_knife.go_to()
 target_knife.pickup()
 target_bread.go_to()
 target_bread.slice()
+
+Python Script:
+target_knife = InteractionObject("Knife", landmark = "Fridge")
 target_knife.put_down() # put down the knife to free up the agent's hand
 target_bread_slice1 = InteractionObject("BreadSliced", attributes = ["toasted"]) # instantiate a bread slice object after slicing bread
 target_bread_slice1.toast()

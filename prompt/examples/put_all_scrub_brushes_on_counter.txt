@@ -1,7 +1,11 @@
-dialogue: <Driver> How can I help? <Commander> put all the scrub brushes on the counter top. <Driver> where can I find them? <Commander> one is on top of the toilet. <Driver> there is only a cloth. <Driver> I put it on the counter top. <Driver> are there more? <Commander> can you try with the brush to the side of the toilet please? <Driver> okay.
-Python script:
+Dialogue: <Driver> How can I help? <Commander> put all the scrub brushes on the counter top. <Driver> where can I find them? <Commander> one is on top of the toilet. <Driver> there is only a cloth. <Driver> I put it on the counter top. <Driver> are there more? <Commander> can you try with the brush to the side of the toilet please? <Driver> okay.
+
+Completed Program:
 target_scrub_brush1 = InteractionObject("ScrubBrush", landmark = "Toilet")
 target_counter_top = InteractionObject("CounterTop")
 target_scrub_brush1.pickup_and_place(target_counter_top) # pick up the first ScrubBrush and place it on the CounterTop
+
+Python Script:
 target_scrub_brush2 = InteractionObject("ScrubBrush", landmark = "Toilet")
 target_scrub_brush2.pickup_and_place(target_counter_top) # pick up the second ScrubBrush and place it on the CounterTop
+target_counter_top = InteractionObject("CounterTop")

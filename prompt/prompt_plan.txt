@@ -1,21 +1,41 @@
-You are an adept at translating human dialogues into sequences of actions for household robots. Given a dialogue between a <Driver> and a <Commander>, you convert the conversation into a Python program to be executed by a robot.
+**Objective**: Convert a dialogue between a <Driver> and a <Commander> into a Python program, outlining the sequence of actions a household robot should take.
+
+**Information Provided**:
+
+1. Dialogue that details the tasks the robot needs to complete.
+2. A Python script that represents subgoals the robot has already accomplished. You should NOT recreate these steps in your new script.
+
+**API Instructions**:
+
+You will be provided with a specific API that defines the InteractionObject class and its associated functions. Use this API to generate Python code based on the dialogue.
 
 {API}
 
-Write a script using Python and the InteractionObject class and functions defined above that could be executed by a household robot. 
+**Examples**:
+
+Here are some examples of typical dialogues, completed programs, and the expected output:
 
 {RETRIEVED_EXAMPLES}
 
-Adhere to these stringent guidelines:
-1. Use only the classes and functions defined previously. Do not create functions that are not provided above.
-2. Make sure that you output a consistent plan. For example, opening of the same object should not occur in successive steps.
-3. Make sure the output is consistent with the proper affordances of objects. For example, a couch cannot be opened, so your output should never include the open() function for this object, but a fridge can be opened. 
-4. The input is dialogue between <Driver> and <Commander>. Interpret the dialogue into robot actions. Do not output any dialogue.
-5. Object categories should only be chosen from the following classes: ShowerDoor, Cabinet, CounterTop, Sink, Towel, HandTowel, TowelHolder, SoapBar, ToiletPaper, ToiletPaperHanger, HandTowelHolder, SoapBottle, GarbageCan, Candle, ScrubBrush, Plunger, SinkBasin, Cloth, SprayBottle, Toilet, Faucet, ShowerHead, Box, Bed, Book, DeskLamp, BasketBall, Pen, Pillow, Pencil, CellPhone, KeyChain, Painting, CreditCard, AlarmClock, CD, Laptop, Drawer, SideTable, Chair, Blinds, Desk, Curtains, Dresser, Watch, Television, WateringCan, Newspaper, FloorLamp, RemoteControl, HousePlant, Statue, Ottoman, ArmChair, Sofa, DogBed, BaseballBat, TennisRacket, VacuumCleaner, Mug, ShelvingUnit, Shelf, StoveBurner, Apple, Lettuce, Bottle, Egg, Microwave, CoffeeMachine, Fork, Fridge, WineBottle, Spatula, Bread, Tomato, Pan, Cup, Pot, SaltShaker, Potato, PepperShaker, ButterKnife, StoveKnob, Toaster, DishSponge, Spoon, Plate, Knife, DiningTable, Bowl, LaundryHamper, Vase, Stool, CoffeeTable, Poster, Bathtub, TissueBox, Footstool, BathtubBasin, ShowerCurtain, TVStand, Boots, RoomDecor, PaperTowelRoll, Ladle, Kettle, Safe, GarbageBag, TeddyBear, TableTopDecor, Dumbbell, Desktop, AluminumFoil, Window, LightSwitch, AppleSliced, BreadSliced, LettuceSliced, PotatoSliced, TomatoSliced
-6. You can only pick up one object at a time. If the agent is holding an object, the agent should place or put down the object before attempting to pick up a second object.
-7. Each object instance should instantiate a different InteractionObject class even if two object instances are the same object category. 
-Follow the output format provided earlier. Think step by step to carry out the instruction.
+**Guidelines**:
 
-Write a Python script that could be executed by a household robot for the following:
-dialogue: {command}
-Python script: 
+1. Only utilize the classes and functions provided in the API. Do NOT introduce new functions.
+2. The output should represent a logical sequence. For instance, consecutive steps shouldn't have repetitive actions like opening the same object twice.
+3. The actions should match the object's physical properties. E.g., you can't open a couch, but a fridge can be opened.
+4. The primary input is the dialogue between the <Driver> and the <Commander>. Your task is to translate this dialogue into actions for the robot, excluding any direct dialogue in the output.
+5. Limit your object categories to the predefined list provided. *List of objects here*
+6. The robot can handle one object at a time. If the robot has an object, it must place it down before picking another.
+7. Different object instances, even of the same category, should be represented as distinct InteractionObject classes.
+8. Your output should only include steps required to finish the task, considering the already completed subgoals. Don't redo any accomplished steps. However, you should initialize any InteractionObject class objects used in your script.
+9. Ensure the output format aligns with the examples provided. Approach the instruction methodically, thinking about each step.
+
+**Task**:
+
+Given the dialogue and a completed program, write a Python script the robot should follow.
+
+Dialogue: {command}
+
+Completed Program: 
+{completed_program}
+
+Python Script: 

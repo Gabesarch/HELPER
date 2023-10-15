@@ -97,7 +97,13 @@ class SubGoalController(ExecuteController, PlannerController):
         split = args.split
 
         ###########%%%%%% PARAMS %%%%%%%#########
+        keep_head_down = True # keep head oriented dwon when navigating (want this True if estimating depth)
+        keep_head_straight = False # keep head oriented straight when navigating (want this False if estimating depth)
+
         self.log_every = args.log_every # log every X iters if generating video
+        # self.eval_rows_to_add = eval_rows_to_add
+
+        self.teleport_to_objs = args.teleport_to_objs # teleport to objects instead of navigating
         self.render = args.create_movie and (iteration % self.log_every == 0) # render video? NOTE: video is rendered to self.root folder
         use_gt_objecttrack = args.use_gt_seg # if navigating, use GT object masks for getting object detections + centroids?
         use_gt_depth = args.use_gt_depth # if navigating, use GT depth maps? 
@@ -110,12 +116,24 @@ class SubGoalController(ExecuteController, PlannerController):
         self.add_back_objs_progresscheck = args.add_back_objs_progresscheck
         self.use_constraint_check = args.use_constraint_check
         self.use_mask_rcnn_pred = args.use_mask_rcnn_pred
+        
+        do_masks = args.do_masks # use masks from detector. If False, use boxes (Note: use_gt_objecttrack must be False)
+        use_solq = args.use_solq # use SOLQ model? need this for masks
+        
+        self.new_parser = args.new_parser
+
+        
         self.episode_in_try_except = args.episode_in_try_except # Continue to next episode if assertion error occurs? 
+
         self.dist_thresh = args.dist_thresh # distance threshold for point goal navigation 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.mode = args.mode
 
-        self.add_map = True
+        if self.teleport_to_objs:
+            self.use_GT_seg_for_interaction = True
+            self.add_map = False
+        else:
+            self.add_map = True
 
         self.interacted_ids = [] # for teleporting to keep track
         self.navigation_action_fails = 0
@@ -149,8 +167,8 @@ class SubGoalController(ExecuteController, PlannerController):
             "LookDown":"Look Down",
             "LookUp":"Look Up",
             "Done":"Stop",
-            'PutObject':"Place",
-            'PickupObject':"Pickup",
+            # 'PutObject':"Place",
+            # 'PickupObject':"Pickup",
             }
 
         self.include_classes = [
@@ -176,6 +194,7 @@ class SubGoalController(ExecuteController, PlannerController):
         # user defined action list
         self.NONREMOVABLE_CLASSES = ["Toilet", "Desk", "StoveKnob", "Faucet", "Fridge", "SinkBasin", "Sink", "Bed", "Microwave", "CoffeeTable", "HousePlant", "DiningTable", "Sofa", 'ArmChair', 'Toaster', 'CoffeeMachine', 'Lettuce', 'Tomato', 'Bread', 'Potato', 'Plate']
         self.FILLABLE_CLASSES = ["Bottle", "Bowl", "Cup", "HousePlant", "Kettle", "Mug", "Pot", "WateringCan", "WineBottle"]
+        # self.RETRY_ACTIONS = ["Pickup", "Place", "Slice", "Pour"]
         self.RETRY_ACTIONS_IMAGE = ["Place"]
         self.RETRY_DICT_IMAGE = {a:self.include_classes for a in self.RETRY_ACTIONS_IMAGE}
         self.RETRY_DICT_IMAGE["Place"] = ["CounterTop", "Bed", "DiningTable", "CoffeeTable", "SinkBasin", "Sink", "Sofa", 'ArmChair', 'Plate']
@@ -192,7 +211,7 @@ class SubGoalController(ExecuteController, PlannerController):
                 'Chair', 'Dresser', 'Ottoman', 'DogBed', 
                 'Footstool', 'Safe', 'TVStand'
                 ]
-        self.clean_classes = ["Bowl", "Cup", "Mug", "Plate"]
+        self.clean_classes = []
 
         if not self.use_gt_subgoals:
             self.llm = LLMPlanner(
@@ -296,8 +315,12 @@ class SubGoalController(ExecuteController, PlannerController):
         keep_head_straight = False
         search_pitch_explore = False
         block_map_positions_if_fail=True
-        look_down_init = True
-        keep_head_down = False
+        if args.use_estimated_depth or args.increased_explore:
+            look_down_init = True
+            keep_head_down = False
+        else:
+            look_down_init = True
+            keep_head_down = False
         self.navigation = Navigation(
             controller=self.controller, 
             keep_head_down=keep_head_down, 
@@ -311,9 +334,9 @@ class SubGoalController(ExecuteController, PlannerController):
             )
         self.navigation.init_navigation(None)
 
-        self.navigation.bring_head_to_angle(update_obs=False)
+        # self.navigation.bring_head_to_angle(update_obs=False)
         
-        origin_T_camX0 = utils.aithor.get_origin_T_camX(self.controller .last_event, False)
+        origin_T_camX0 = utils.aithor.get_origin_T_camX(self.controller.last_event, False)
 
         self.object_tracker = ObjectTrack(
             self.name_to_id, 
@@ -334,26 +357,29 @@ class SubGoalController(ExecuteController, PlannerController):
             )
         self.teach_task.object_tracker = self.object_tracker
 
-        if object_cat_pickup is not None and in_hand:
-            # add holding object
-            self.object_tracker.objects_track_dict[self.object_tracker.id_index] = {}
-            self.object_tracker.objects_track_dict[self.object_tracker.id_index]['scores'] = 1.01
-            self.object_tracker.objects_track_dict[self.object_tracker.id_index]['label'] = object_cat_pickup
-            self.object_tracker.objects_track_dict[self.object_tracker.id_index]['locs'] = None
-            self.object_tracker.objects_track_dict[self.object_tracker.id_index]['holding'] = True
-            self.object_tracker.objects_track_dict[self.object_tracker.id_index]['can_use'] = True
-            self.object_tracker.objects_track_dict[self.object_tracker.id_index]['sliced'] = False
-            self.object_tracker.id_index += 1
+        # if object_cat_pickup is not None and in_hand:
+        #     # add holding object
+        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index] = {}
+        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index]['scores'] = 1.01
+        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index]['label'] = object_cat_pickup
+        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index]['locs'] = None
+        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index]['holding'] = True
+        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index]['can_use'] = True
+        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index]['sliced'] = False
+        #     self.object_tracker.id_index += 1
         
         if args.create_movie:
             self.vis = Animation(
                 self.W, self.H, 
                 navigation=None if args.remove_map_vis else self.navigation, 
-                name_to_id=self.name_to_id
+                name_to_id=self.name_to_id,
                 )
             os.makedirs(args.movie_dir, exist_ok=True)
+            self.vis.object_tracker = self.object_tracker
         else:
             self.vis = None
+
+        
 
     def load_edh_instance(self, edh_instance: str):
         self.edh_instance: dict = None
@@ -367,6 +393,9 @@ class SubGoalController(ExecuteController, PlannerController):
         else:
             if self.er is None:
                 self.er = EpisodeReplay("thor", ["ego", "allo", "targetobject"])
+            self.er.replay_actions = [] 
+            self.er.replay_images = [] 
+            self.er.replay_depth_images = []
             instance = load_json(edh_instance)
             check_task = InferenceRunner._get_check_task(instance, self.runner_config)
             game_file = InferenceRunner.get_game_file(instance, self.runner_config)
@@ -389,6 +418,7 @@ class SubGoalController(ExecuteController, PlannerController):
             self.game_id = self.edh_instance['game_id']
             self.metrics = create_new_traj_metrics(instance_id, self.game_id)
             self.metrics["init_success"] = init_success
+            self.metrics.update({'successful steps':'', 'failed subtasks':'', 'task description':'', 'satisfied objects':'', 'failed_subgoals':'', 'failed steps':'', 'subgoals':'', 'LLM output':'', 'candidate objects':'', 'Dialogue':'', 'error_correct_subgoals':'', 'attempted_subgoals':'', 'success_subgoals':'', 'full_prompt':'', 'successful subtasks':''})
             if args.use_progress_check:
                 self.metrics_before_feedback = copy.deepcopy(self.metrics)
                 self.metrics_before_feedback2 = copy.deepcopy(self.metrics)
@@ -406,9 +436,240 @@ class SubGoalController(ExecuteController, PlannerController):
                     self.init_gc_total,
                     self.init_gc_satisfied,
                 ) = InferenceRunner._check_episode_progress(self.er, check_task)
-
+        
         self.er.simulator.is_record_mode = True
+
+        if not init_success:
+            self.eval()
+
         return init_success
+
+    def replay_actions(self):
+
+        steps_replay = 0
+        self.last_pickup_id = None
+
+        frame_init = self.controller.last_event.frame
+        depth_frame_init = self.controller.last_event.depth_frame
+
+        self.action_to_mappedaction_reverse = {v:k for k,v in self.action_to_mappedaction.items()}
+
+        self.teach_task.pretend_step = True
+        self.navigation.explorer.exploring = True
+
+        image_history_dir = os.path.join(args.teach_data_dir, 'images', args.split, self.edh_instance['game_id'])
+
+        # bring head to angle
+        for a_i in range(30//args.HORIZON_DT):
+            self.navigation.take_action(
+                action='LookDown',
+                vis=None,
+                text='',
+                object_tracker=None, 
+                add_obs=False,
+            )
+
+        if len(self.edh_instance['driver_image_history'])==0:
+            # reset to after replay
+            self.teach_task.pretend_step = False
+            self.controller.last_event.frame = frame_init
+            self.controller.last_event.depth_frame = depth_frame_init
+            return
+
+        self.controller.last_event.frame = self.er.replay_images[0]
+        if args.use_gt_depth:
+            self.controller.last_event.depth_frame = self.er.replay_depth_images[0]
+        else:
+            self.controller.last_event.depth_frame = 100*np.ones_like(depth_frame_init)
+        rgb, depth = self.navigation.get_obs(head_tilt=self.navigation.explorer.head_tilt)
+
+        if self.navigation.explorer.max_depth_image is not None:
+            if self.navigation.explorer.exploring:
+                depth[depth>self.navigation.explorer.exploring_max_depth_image] = np.nan
+            else:
+                depth[depth>self.navigation.explorer.max_depth_image] = np.nan
+
+        self.navigation.explorer.mapper.add_observation(self.navigation.explorer.position, 
+                                    self.navigation.explorer.rotation, 
+                                    -self.navigation.explorer.head_tilt, 
+                                    depth,
+                                    add_obs=True)
+
+        actions = self.er.replay_actions 
+        images = self.er.replay_images[1:] 
+        depths = self.er.replay_depth_images[1:]
+        for action_i in range(len(actions)):
+            action = actions[action_i]
+            action_name, object_oid, point_2d = action
+            if point_2d is not None:
+                point_2d = [point_2d[1], point_2d[0]]
+            if action_name in ["Text", "Navigation", "SearchObject", "SelectOid", "OpenProgressCheck"]:
+                continue
+            # action_name = action['action_name']
+            if action_name in self.action_to_mappedaction_reverse.keys():
+                action_name = self.action_to_mappedaction_reverse[action_name]
+
+            self.controller.last_event.frame = images[action_i] #rgb
+            # self.er.replay_actions
+            if args.use_gt_depth:
+                self.controller.last_event.depth_frame = depths[action_i]
+            else:
+                self.controller.last_event.depth_frame = 100*np.ones_like(depth_frame_init)
+
+            print(action_name)
+
+            if action_name in ["Place", "Pickup", 'Open', 'Close', "ToggleOn", "ToggleOff", "Slice", "Pour"]:
+                steps_replay += 1
+
+                object_name = object_oid.split('|')[0]
+                if "Sliced" in object_oid and "Sliced" not in object_name:
+                    object_name += "Sliced"
+
+                centroids, labels, IDs = self.object_tracker.get_centroids_and_labels(return_ids=True, object_cat=object_name, include_holding=False)
+
+                # if len(labels)==0:
+                point_2D_ = point_2d #[action['x'], action['y']]
+                # get 3D placement location
+                pad = 10
+                camX0_T_camX = self.navigation.explorer.get_camX0_T_camX()
+                rgb, depth = self.navigation.get_obs(head_tilt=self.navigation.explorer.head_tilt)
+                depth = cv2.resize(depth, (self.W, self.H), interpolation=cv2.INTER_CUBIC)
+                depth = np.nan_to_num(depth)
+                points2d1 = np.clip(np.arange(int(point_2D_[1]*self.web_window_size)-pad, int(point_2D_[1]*self.web_window_size)+pad), a_min=0, a_max=self.W-1)
+                points2d2 = np.clip(np.arange(int(point_2D_[0]*self.web_window_size)-pad, int(point_2D_[0]*self.web_window_size)+pad), a_min=0, a_max=self.H-1)
+                arg_idx = np.argsort(depth[points2d1,points2d2])[len(depth[points2d1,points2d2])//2]
+                points2d_idx1 = points2d1[arg_idx]
+                points2d_idx2 = points2d2[arg_idx]
+                depth_ = torch.from_numpy(depth).unsqueeze(0).unsqueeze(0).cuda()
+                xyz = utils.geom.depth2pointcloud(depth_, torch.from_numpy(self.pix_T_camX).unsqueeze(0).float().cuda())
+                xyz_origin = utils.geom.apply_4x4(camX0_T_camX.float().cuda(), xyz.float()).squeeze().cpu().numpy()
+                xyz_origin = xyz_origin.reshape(1,self.W,self.H,3) 
+                c_depth = np.squeeze(xyz_origin[:,points2d_idx2, points2d_idx1,:])
+                print(action_name, object_name, c_depth)
+
+                # NMS
+                if len(labels)>0:
+                    dist_thresh_ = args.OT_dist_thresh
+                    locs = np.array(centroids)
+                    dists = np.sqrt(np.sum((locs - np.expand_dims(c_depth, axis=0))**2, axis=1))
+                    dists_thresh = dists<dist_thresh_ #self.dist_threshold
+                else:
+                    dists_thresh = 0 # no objects of this class in memory
+                if np.sum(dists_thresh)>0:
+                    same_ind = np.where(dists_thresh)[0][0]
+                    same_id = IDs[same_ind]
+                    scores_object = self.object_tracker.get_score_of_label(object_oid.split('|')[0])
+                    max_score = max(scores_object)
+                    self.object_tracker.objects_track_dict[same_id]['scores'] = max(1.01, max_score+0.01)
+                    self.object_tracker.objects_track_dict[same_id]['locs'] = c_depth
+                    centroids, labels, IDs = self.object_tracker.get_centroids_and_labels(return_ids=True, object_cat=object_name, include_holding=False)
+                else:
+                    attributes = {
+                        'locs':c_depth,
+                        'label':object_name,
+                        'scores':1.01,
+                        'holding':False,
+                        'can_use':True,
+                        'sliced':False,
+                        'toasted':False,
+                        'clean':False,
+                        'cooked':False
+                        }
+                    self.object_tracker.create_new_object_entry(attributes)
+                    centroids, labels, IDs = self.object_tracker.get_centroids_and_labels(return_ids=True, object_cat=object_name, include_holding=False)
+
+                # first one will be highest confidence
+                object_center = centroids[0]
+                object_name = labels[0]
+                obj_ID = IDs[0]
+
+                self.navigate_obj_info = {}
+                self.navigate_obj_info["object_class"] = object_name
+                self.navigate_obj_info["object_center"] = object_center
+                self.navigate_obj_info["obj_ID"] = obj_ID
+                self.just_navigated = True
+
+                input_point2ds = [[int(point_2d[0] * self.web_window_size), int(point_2d[1] * self.web_window_size)]]
+
+                # if object_center is None:
+                #     st()
+
+                success, error = self.execute_action(
+                    action_name, 
+                    object_name, 
+                    object_done_holding=False, 
+                    retry_image=False, 
+                    retry_location=False,
+                    point_2Ds=input_point2ds, #[[action['x'], action['y']]]
+                    )  
+
+                self.successful_subgoals.append(["Navigate", object_name])
+                self.attempted_subgoals.append(["Navigate", object_name])
+                self.successful_subgoals.append([action_name, object_name])
+                self.attempted_subgoals.append([action_name, object_name])
+
+                if action_name=="Pickup":
+                    self.last_pickup_id = obj_ID
+                    self.object_tracker.objects_track_dict[self.last_pickup_id]['label'] = object_oid.split('|')[0]
+
+                scores_object = self.object_tracker.get_score_of_label(object_oid.split('|')[0])
+                max_score = max(scores_object)
+                self.object_tracker.objects_track_dict[obj_ID]['scores'] = max(1.01, max_score+0.01)
+
+                if self.last_pickup_id is not None:
+                    if action_name=="ToggleOn" and object_name in ["Microwave", "StoveKnob"]:
+                        self.object_tracker.objects_track_dict[self.last_pickup_id]['cooked'] = True
+
+                    if action_name=="ToggleOn" and object_name in ["Toaster"]:
+                        self.object_tracker.objects_track_dict[self.last_pickup_id]['toasted'] = True
+
+                    if action_name=="ToggleOn" and object_name in ["Faucet"]:
+                        self.object_tracker.objects_track_dict[self.last_pickup_id]['clean'] = True
+
+            else:
+                steps_replay += 1
+                if action_name in ["RotateLeft", "RotateRight", "MoveAhead", 'LookUp', 'LookDown']:
+                    self.navigation.take_action(
+                        action=action_name,
+                        vis=self.vis,
+                        text='',
+                        object_tracker=self.object_tracker, 
+                        add_obs=True,
+                    )
+                elif action_name in ["Pan Left", "Pan Right", "Backward"]:
+                    if action_name=="Pan Left":
+                        actions_to_do = ["RotateLeft", "MoveAhead", "RotateRight"]
+                    elif action_name=="Pan Right":
+                        actions_to_do = ["RotateRight", "MoveAhead", "RotateLeft"]
+                    elif action_name=="Backward":
+                        actions_to_do = ["RotateRight", "RotateRight", "MoveAhead", "RotateLeft", "RotateLeft"]
+                    else:
+                        print(action_name)
+                        assert NotImplementedError
+                    for action_i_ in range(len(actions_to_do)):
+                        if action_i_==len(actions_to_do)-1:
+                            add_obs = True
+                            object_tracker = self.object_tracker
+                            vis = self.vis
+                        else:
+                            add_obs = False
+                            object_tracker = None
+                            vis = None
+                        self.navigation.take_action(
+                                action=actions_to_do[action_i_],
+                                vis=vis,
+                                text='',
+                                object_tracker=object_tracker, 
+                                add_obs=add_obs,
+                            )
+                else:
+                    st()
+
+        # reset to after replay
+        self.teach_task.pretend_step = False
+        self.controller.last_event.frame = frame_init
+        self.controller.last_event.depth_frame = depth_frame_init
+        self.steps_replay = steps_replay
 
     def check_api_constraints(self, subgoals, objects, check_constraints):
         '''
@@ -758,9 +1019,6 @@ class SubGoalController(ExecuteController, PlannerController):
                 subgoals, objects, check_constraints = self.check_api_constraints(subgoals, objects, check_constraints)
             else:
                 subgoals, objects, check_constraints = self.expand_subgoals(subgoals, objects, check_constraints)
-            if args.always_check_constraints:
-                print("OVERRIDING CONSTRAINTS TO ALWAYS CHECK")
-                check_constraints = [True] * len(subgoals) 
 
             if len(subgoals)==0:
                 break
@@ -780,7 +1038,10 @@ class SubGoalController(ExecuteController, PlannerController):
                 object_name = self.name_to_mapped_name_subgoals[object_name]
 
             if subgoal_name == "Navigate":
-                success = self.navigate(object_name)
+                if self.teleport_to_objs:
+                    success = self.teleport_to_object(object_name)
+                else:
+                    success = self.navigate(object_name)
                 if not success:
                     msg = "Can no longer navigate to " + object_name +  ", terminating!"
                     print(msg)
@@ -807,7 +1068,7 @@ class SubGoalController(ExecuteController, PlannerController):
                         check_constraints.pop(0)
                         object_done_holding = True # object should not be interacted with again
                 retry_image = True if (subgoal_name in self.RETRY_ACTIONS_IMAGE and object_name in self.RETRY_DICT_IMAGE[subgoal_name]) else False
-                retry_location = True if (subgoal_name in self.RETRY_ACTIONS_LOCATION and object_name in self.RETRY_DICT_LOCATION[subgoal_name] and self.run_error_correction_llm) else False
+                retry_location = True if (subgoal_name in self.RETRY_ACTIONS_LOCATION and object_name in self.RETRY_DICT_LOCATION[subgoal_name]) else False
                 success, error = self.execute_action(
                     subgoal_name, 
                     object_name, 
@@ -917,9 +1178,6 @@ class SubGoalController(ExecuteController, PlannerController):
         return final_goal_conditions_satisfied, final_goal_conditions_total
 
     def eval(self, additional_tag=''):
-        '''
-        Get task metrics
-        '''
         check_task = InferenceRunner._get_check_task(self.edh_instance, self.runner_config)
         (
             success,
@@ -996,11 +1254,23 @@ class SubGoalController(ExecuteController, PlannerController):
         print(f"Task success: {success}")
         print(f"Final subgoal success: {final_goal_conditions_satisfied} / {final_goal_conditions_total}")
 
+    def get_subgoal_success(self):
+        check_task = InferenceRunner._get_check_task(self.edh_instance, self.runner_config)
+        (
+            success,
+            final_goal_conditions_total,
+            final_goal_conditions_satisfied,
+        ) = InferenceRunner._check_episode_progress(self.er, check_task)
+        return success, final_goal_conditions_total, final_goal_conditions_satisfied
+
     def run_tfd(self, user_progress_check=True):
         if self.episode_in_try_except:
             try:
+                # replay actions that human did before - for EDH
+                self.replay_actions()
                 self.search_dict = {}
-                camX0_T_camXs = self.map_and_explore()
+                if not self.teleport_to_objs:
+                    camX0_T_camXs = self.map_and_explore()
                 print("RUNNING IN TRY EXCEPT")
                 if self.use_gt_subgoals:
                     subgoals = []
@@ -1039,11 +1309,6 @@ class SubGoalController(ExecuteController, PlannerController):
                     self.metrics_before_feedback2 = copy.deepcopy(self.teach_task.metrics)
                     task_dict = self.progress_check()
                     if not task_dict['success']:
-                        if args.add_back_objs_progresscheck_v2:
-                            # reset removed objects
-                            for obj_ID in self.object_tracker_ids_removed:
-                                self.object_tracker.objects_track_dict[obj_ID]["can_use"] = True 
-                            self.object_tracker_ids_removed = []
                         subgoals, objects, self.search_dict = self.run_llm(task_dict, log_tag='_user_feedback2')
                         self.completed_subgoals = []
                         succ = self.run_subgoals(subgoals, objects, run_error_correction=True, completed_subgoals=self.completed_subgoals)
@@ -1059,8 +1324,11 @@ class SubGoalController(ExecuteController, PlannerController):
                 print(e)
                 print(traceback.format_exc())
         else:
+            # replay actions that human did before - for EDH
+            self.replay_actions()
             self.search_dict = {}
-            camX0_T_camXs = self.map_and_explore()
+            if not self.teleport_to_objs:
+                camX0_T_camXs = self.map_and_explore()
             if self.use_gt_subgoals:
                 subgoals = []
                 objects = []
@@ -1097,11 +1365,6 @@ class SubGoalController(ExecuteController, PlannerController):
                 self.metrics_before_feedback2 = copy.deepcopy(self.teach_task.metrics)  
                 task_dict = self.progress_check()
                 if not task_dict['success']:
-                    if args.add_back_objs_progresscheck_v2:
-                        # reset removed objects
-                        for obj_ID in self.object_tracker_ids_removed:
-                            self.object_tracker.objects_track_dict[obj_ID]["can_use"] = True 
-                        self.object_tracker_ids_removed = []
                     subgoals, objects, self.search_dict = self.run_llm(task_dict, log_tag='_user_feedback2')
                     self.completed_subgoals = []
                     succ = self.run_subgoals(subgoals, objects, run_error_correction=True, completed_subgoals=self.completed_subgoals)
@@ -1111,7 +1374,7 @@ class SubGoalController(ExecuteController, PlannerController):
         if args.mode in ["teach_eval_tfd", "teach_eval_custom"]:
             self.run_tfd(user_progress_check=self.use_progress_check)
         elif args.mode=="teach_eval_edh":
-            self.run_edh()
+            self.run_tfd(user_progress_check=self.use_progress_check)
         self.teach_task.step("Stop", None)
         self.eval()
         if self.controller is not None:
@@ -1154,11 +1417,25 @@ def run_teach():
     data_dir = args.teach_data_dir 
     output_dir = "./plots/subgoal_output"
     images_dir = "./plots/subgoal_output"
-    if args.mode=="teach_eval_tfd":
-        instance_dir = os.path.join(data_dir, f"tfd_instances/{split_}")
-    elif args.mode=="teach_eval_edh":
-        instance_dir = os.path.join(data_dir, f"edh_instances/{split_}")
-    files = os.listdir(instance_dir) # sample every other
+    
+    if split_=="valid_seen":
+        split_short = "val_seen"
+    elif split_=="valid_unseen":
+        split_short = "val_unseen"
+    elif split_=="test_seen":
+        split_short = "test_seen"
+        split_ = args.split = "valid_seen"
+    elif split_=="test_unseen":
+        split_short = "test_unseen"
+        split_ = args.split = "valid_unseen"
+    else:
+        raise NotImplementedError
+
+    with open(f'./teach/src/teach/meta_data_files/divided_split/edh_instances/divided_{split_short}.txt') as file:
+        files = [line.rstrip() for line in file]
+
+    instance_dir = os.path.join(data_dir, f"edh_instances/{split_}")
+    # files = os.listdir(instance_dir) # sample every other
 
     if args.sample_every_other:
         files = files[::2]
@@ -1169,6 +1446,9 @@ def run_teach():
 
     if args.max_episodes is not None:
         files = files[:args.max_episodes]
+
+    if args.start_index is not None:
+        files = files[args.start_index:]
 
     # initialize wandb
     if args.set_name=="test00":
@@ -1193,6 +1473,10 @@ def run_teach():
     er = None
     depth_estimation_network = None
     segmentation_network = None
+
+    # with open("./data/file_order_edh.json", "w") as fp:
+    #     json.dump(files, fp)
+
     for file in files:
         print("Running ", file)
         print(f"Iteration {iter_+1}/{len(files)}")
@@ -1229,17 +1513,18 @@ def run_teach():
         iter_ += 1
 
         if save_metrics:
+            
             from teach.eval.compute_metrics import aggregate_metrics
-
             aggregrated_metrics = aggregate_metrics(metrics, args)
 
             print('\n\n---------- File 1 ---------------')
             to_log = []  
             to_log.append('-'*40 + '-'*40)
-            list_of_files = files 
+            list_of_files = files #list(metrics.keys())
+            # to_log.append(f'Files: {str(list_of_files)}')
             to_log.append(f'Split: {split_}')
             to_log.append(f'Number of files: {len(list(metrics.keys()))}')
-            for f_n in aggregrated_metrics.keys(): 
+            for f_n in aggregrated_metrics.keys(): #keys_include:
                 to_log.append(f'{f_n}: {aggregrated_metrics[f_n]}') 
             to_log.append('-'*40 + '-'*40)
 
@@ -1265,46 +1550,6 @@ def run_teach():
                     if k=="pred_actions":
                         continue
                     to_add_tbl.append(metrics[f_k][k])
+                # list_values = [f_k] + list(metrics[f_k].values())
                 tbl.add_data(*to_add_tbl)
             wandb.log({f"Metrics_summary/Metrics": tbl, 'step':iter_})
-
-            if args.use_progress_check:
-
-                aggregrated_metrics_before_feedback = aggregate_metrics(metrics_before_feedback, args)
-
-                print('\n\n---------- File 1 ---------------')
-                to_log = []  
-                to_log.append('-'*40 + '-'*40)
-                list_of_files = files 
-                to_log.append(f'Split: {split_}')
-                to_log.append(f'Number of files: {len(list(metrics_before_feedback.keys()))}')
-                for f_n in aggregrated_metrics_before_feedback.keys(): 
-                    to_log.append(f'{f_n}: {aggregrated_metrics_before_feedback[f_n]}') 
-                to_log.append('-'*40 + '-'*40)
-
-                aggregrated_metrics_before_feedback["num episodes"] = iter_
-                tbl = wandb.Table(columns=list(aggregrated_metrics_before_feedback.keys()))
-                tbl.add_data(*list(aggregrated_metrics_before_feedback.values()))
-                wandb.log({f"Metrics_summary/Summary_before_feedback": tbl, 'step':iter_})
-
-                save_dict_as_json(metrics_before_feedback, metrics_file_before_feedback)
-
-
-                aggregrated_metrics_before_feedback2 = aggregate_metrics(metrics_before_feedback2, args)
-
-                print('\n\n---------- File 1 ---------------')
-                to_log = []  
-                to_log.append('-'*40 + '-'*40)
-                list_of_files = files 
-                to_log.append(f'Split: {split_}')
-                to_log.append(f'Number of files: {len(list(metrics_before_feedback2.keys()))}')
-                for f_n in aggregrated_metrics_before_feedback2.keys(): #keys_include:
-                    to_log.append(f'{f_n}: {aggregrated_metrics_before_feedback2[f_n]}') 
-                to_log.append('-'*40 + '-'*40)
-
-                aggregrated_metrics_before_feedback2["num episodes"] = iter_
-                tbl = wandb.Table(columns=list(aggregrated_metrics_before_feedback2.keys()))
-                tbl.add_data(*list(aggregrated_metrics_before_feedback2.values()))
-                wandb.log({f"Metrics_summary/Summary_before_feedback": tbl, 'step':iter_})
-
-                save_dict_as_json(metrics_before_feedback2, metrics_file_before_feedback2)

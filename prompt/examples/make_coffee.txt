@@ -1,5 +1,9 @@
-dialogue: <Commander> Prepare coffee in a clean mug.
-Python script:
+Dialogue: <Commander> Prepare coffee in a clean mug.
+
+Completed Program:
+# Nothing completed
+
+Python Script:
 target_mug = InteractionObject("Mug", attributes = ["clean"]) # always want a clean mug to put coffee in
 target_mug.go_to()
 target_mug.pickup()

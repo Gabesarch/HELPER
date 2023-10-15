@@ -1,12 +1,15 @@
-dialogue: <Commander> we first need a slice a tomato. <Commander> tomato is by the sink. <Commander> next slice the potato. <Commander> next cook a slice of the potato. <Commander> on the stove. <Commander> you may need to turn the stove burner on. <Commander> the pan is on the right front of the stove. <Commander> Put all components on a plate.
-Python script:
+Dialogue: <Commander> we first need a slice a tomato. <Commander> tomato is by the sink. <Commander> next slice the potato. <Commander> next cook a slice of the potato. <Commander> on the stove. <Commander> you may need to turn the stove burner on. <Commander> the pan is on the right front of the stove. <Commander> Put all components on a plate.
+
+Completed Program:
 target_tomato = InteractionObject("Tomato", landmark = "Sink")
-target_potato = InteractionObject("Potato")
 target_knife = InteractionObject("Knife") # need knife to slice tomato
 target_knife.go_to() # first get knife
 target_knife.pickup()
 target_tomato.go_to()
 target_tomato.slice()
+
+Python Script:
+target_potato = InteractionObject("Potato")
 target_tomato_slice1 = InteractionObject("TomatoSliced") # instantiate a tomato slice object after slicing tomato
 target_potato.go_to()
 target_potato.slice()

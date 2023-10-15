@@ -1,10 +1,13 @@
-dialogue: <Driver> what shall I do today? <Commander> clean all the bowls. <Driver> where are the bowls? <Commander> start with the one by the stove. <Commander> left. <Commander> rinse it with water. <Commander> great. <Driver> what next? <Commander> the next one is in the fridge. <Commander> you need to rinse it with water also. <Commander> great job. we are finished. <Driver> thanks.
-Python script:
+Dialogue: <Driver> what shall I do today? <Commander> clean all the bowls. <Driver> where are the bowls? <Commander> start with the one by the stove. <Commander> left. <Commander> rinse it with water. <Commander> great. <Driver> what next? <Commander> the next one is in the fridge. <Commander> you need to rinse it with water also. <Commander> great job. we are finished. <Driver> thanks.
+
+Completed Program:
 target_bowl1 = InteractionObject("Bowl", landmark = "Stove", attributes = ["clean"])
 target_bowl1.go_to()
 target_bowl1.pickup()
 target_bowl1.clean()
 target_bowl1.put_down()
+
+Python Script:
 target_bowl2 = InteractionObject("Bowl", landmark = "Fridge", attributes = ["clean"])
 target_bowl2.go_to()
 target_bowl2.pickup()

@@ -75,6 +75,14 @@ class PlannerController:
         pass        
 
     def run_llm(self, task_dict, log_tag=''):
+
+        self.llm.search_dict = {}
+        successful_program = self.llm.subgoals_to_program(self.successful_subgoals)
+        if successful_program[-1:]=='\n':
+            successful_program = successful_program[:-1]
+        if successful_program=='':
+            successful_program = '# Nothing completed'
+        task_dict["successful_program"] = successful_program
         
         prompt = self.llm.get_prompt_plan(task_dict)
         program = self.llm.run_gpt(prompt)
@@ -83,8 +91,6 @@ class PlannerController:
         text = '' #'-----DIALOGUE----\n'
         for line in task_dict['dialog_history_cleaned']:
             text += f'<{line[0]}> {line[1]}\n'
-        # text += '\n\n\n-----LLM OUTPUT----\n'
-        # text += program
         subgoals_text = str([[i,j] for i,j in zip(subgoals, objects)])
         tbl = wandb.Table(columns=["Dialogue", "LLM output", "subgoals", "full_prompt"])
         tbl.add_data(text, program, subgoals_text, prompt)
@@ -127,8 +133,8 @@ class PlannerController:
             execution_error += self.help_message
 
         state_text = None
-        completed_program = None #self.llm.subgoals_to_program(self.completed_subgoals)
-        future_program = None #self.llm.subgoals_to_program(self.future_subgoals, self.object_tracker.get_label_of_holding())
+        completed_program = None 
+        future_program = None 
         failed_program = self.llm.subgoals_to_program([self.current_subgoal], self.object_tracker.get_label_of_holding())
 
         prompt = self.llm.get_prompt_replan(completed_program, future_program, failed_program, execution_error, state_text)

@@ -63,7 +63,7 @@ class LLMPlanner:
             self.prompt_replan = f.read()
 
         if nn_examples:
-            if example_mode in ["teach_eval_tfd", "teach_eval_continual"]:
+            if example_mode in ["teach_eval_tfd", "teach_eval_edh", "teach_eval_continual"]:
                 # initial planning
                 self.embeddings = np.load(os.path.join(gpt_embedding_dir, 'embeddings.npy'))
                 with open(os.path.join(gpt_embedding_dir, 'file_order.txt')) as f:
@@ -108,6 +108,8 @@ class LLMPlanner:
                 command += ' '
         self.command = command
 
+        self.completed_program = task_dict['successful_program']
+
         if self.nn_examples:
             self.get_examples_planning(self.topk)
 
@@ -115,8 +117,12 @@ class LLMPlanner:
         prompt = prompt.replace('{API}', f'{self.api}')
         prompt = prompt.replace('{RETRIEVED_EXAMPLES}', f'{self.examples}')
         prompt = prompt.replace('{command}', f'{command}')
+        prompt = prompt.replace('{completed_program}', f'{self.completed_program}')
 
         prompt = self.check_prompt_length(prompt)
+
+        with open('prompt_example.txt', 'w') as f:
+            f.write(prompt)
 
         print(prompt)
         
