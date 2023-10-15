@@ -35,13 +35,6 @@ class MESSAgent():
     def act(self, obs, fig=None, point_goal=None, keep_head_down=False):
         self.step_count += 1
         if self.step_count == 1:
-            # # Simply testing if torch works or not 
-            # device = torch.device('cuda')
-            # a = torch.zeros((1, 3, 400, 600)).float().to(device)
-            # b = torch.ones((1, 3, 400, 600)).float().to(device)
-            # c = a+b
-            # assert(torch.sum(c).detach().cpu().numpy() == 400*600*3)
-            # logging.error('Torch OK')
             pass
 
         if self.cover:

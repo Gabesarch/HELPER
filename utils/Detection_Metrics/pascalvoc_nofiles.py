@@ -52,10 +52,10 @@ import shutil
 import sys
 
 # from Detection_Metrics._init_paths import _init_paths
-from Detection_Metrics.lib.BoundingBox import BoundingBox
-from Detection_Metrics.lib.BoundingBoxes import BoundingBoxes
-from Detection_Metrics.lib.Evaluator import *
-from Detection_Metrics.lib.utils_pascal import BBFormat
+from utils.Detection_Metrics.lib.BoundingBox import BoundingBox
+from utils.Detection_Metrics.lib.BoundingBoxes import BoundingBoxes
+from utils.Detection_Metrics.lib.Evaluator import *
+from utils.Detection_Metrics.lib.utils_pascal import BBFormat
 
 import ipdb
 st = ipdb.set_trace

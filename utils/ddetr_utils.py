@@ -7,12 +7,12 @@ from arguments import args
 # from nets.REPLAY.util import box_ops
 import warnings
 
-from Detection_Metrics.pascalvoc_nofiles import get_map, ValidateFormats, ValidateCoordinatesTypes, add_bounding_box
+from utils.Detection_Metrics.pascalvoc_nofiles import get_map, ValidateFormats, ValidateCoordinatesTypes, add_bounding_box
 import glob
-from Detection_Metrics.lib.BoundingBox import BoundingBox
-from Detection_Metrics.lib.BoundingBoxes import BoundingBoxes
-from Detection_Metrics.lib.Evaluator import *
-from Detection_Metrics.lib.utils_pascal import BBFormat
+from utils.Detection_Metrics.lib.BoundingBox import BoundingBox
+from utils.Detection_Metrics.lib.BoundingBoxes import BoundingBoxes
+from utils.Detection_Metrics.lib.Evaluator import *
+from utils.Detection_Metrics.lib.utils_pascal import BBFormat
 
 import ipdb
 st = ipdb.set_trace

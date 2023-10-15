@@ -1,30 +1,22 @@
 import sys
 import json
-
 import ipdb
 st = ipdb.set_trace
 from arguments import args
-
 from time import sleep
 from typing import List
 import matplotlib.pyplot as plt
 from ai2thor.controller import Controller
-
 from task_base.object_tracker import ObjectTrack
 from task_base.navigation import Navigation
 from task_base.animation_util import Animation
 from task_base.teach_base import TeachTask
-from backend import saverloader
 import pickle
-
 import numpy as np
 import os
-
 import cv2
-
 import csv
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-
 from teach.dataset.dataset import Dataset
 from teach.dataset.definitions import Definitions
 from teach.logger import create_logger
@@ -45,9 +37,7 @@ from teach.eval.compute_metrics import create_new_traj_metrics, evaluate_traj
 from prompt.run_gpt import LLMPlanner
 import copy
 import traceback
-
 from task_base.aithor_base import get_rearrangement_categories
-
 logging.basicConfig(
             level=logging.DEBUG,
             format='%(asctime)s %(levelname)s %(message)s',
@@ -58,9 +48,7 @@ logging.basicConfig(
 from IPython.core.debugger import set_trace
 from PIL import Image
 import wandb
-
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
 
@@ -74,6 +62,9 @@ class ExecuteController:
         pass
 
     def map_and_explore(self, render=False):
+        '''
+        Map out the scene
+        '''
         self.object_tracker.check_if_centroid_falls_within_map = False
         max_explore_steps = 150
         if args.load_explore:
@@ -126,6 +117,9 @@ class ExecuteController:
                 self.vis.add_frame(self.get_image(self.controller), text="FINAL POS MAPPING")
 
     def random_search(self, target, max_steps=200):
+        '''
+        Randomly select location in map to search
+        '''
         print("Searching for object!")
         if args.use_estimated_depth:
             self.navigation.bring_head_to_angle(angle=0, vis=self.vis)
@@ -247,6 +241,9 @@ class ExecuteController:
         return {}
 
     def search_near_related_objects(self, object_name, max_steps=75):
+        '''
+        Search near mentioned objects 
+        '''
         if self.use_llm_search:
             '''
             Get commonsense search locations from LLM
@@ -272,6 +269,9 @@ class ExecuteController:
         return found_obj
 
     def get_object_data(self, object_name):
+        '''
+        get object data from object tracker
+        '''
 
         centroids, labels, IDs = self.object_tracker.get_centroids_and_labels(return_ids=True, object_cat=object_name, include_holding=True)
         if object_name not in labels:
@@ -312,6 +312,9 @@ class ExecuteController:
         object_name=None, 
         obj_ID=None,
         ):
+        '''
+        Navigate to object
+        '''
 
         if self.teach_task.is_done():
             return False
@@ -507,6 +510,9 @@ class ExecuteController:
         retry_location=True, # Retry interaction at multiple locations around the object
         log_error=True, # log error messages in teach base
         ):
+        '''
+        Execute manipulation actions and update object states
+        '''
 
         if self.teach_task.is_done():
             return False, "task done"
@@ -723,8 +729,6 @@ class ExecuteController:
 
                 holding_ID = self.object_tracker.get_ID_of_holding()
                 if holding_ID is not None:
-                    # if not self.object_tracker.objects_track_dict[holding_ID]["sliced"]:
-                    #     # if sliced then object stays at original locatiom
                     self.object_tracker.objects_track_dict[holding_ID]["locs"] = c_depth
                     self.object_tracker.objects_track_dict[holding_ID]["holding"] = False
                     self.object_tracker.objects_track_dict[holding_ID]["scores"] = 1.01
@@ -733,7 +737,6 @@ class ExecuteController:
                         self.object_tracker.objects_track_dict[holding_ID]["can_use"] = False
                         self.object_tracker_ids_removed.append(holding_ID)
             elif step_success and action_name=="Pickup":
-                # if not self.object_tracker.objects_track_dict[obj_ID]["sliced"]:
                 self.object_tracker.objects_track_dict[obj_ID]["locs"] = None
                 self.object_tracker.objects_track_dict[obj_ID]["holding"] = True
                 self.object_tracker.objects_track_dict[obj_ID]["scores"] = 1.01
@@ -753,7 +756,7 @@ class ExecuteController:
                     self.object_tracker.create_new_object_entry(attributes)
                 self.object_tracker.objects_track_dict[obj_ID]["can_use"] = False # object has now been sliced and so its not usable directly
             
-            if not step_success and obj_ID is not None: # and (object_name not in self.NONREMOVABLE_CLASSES) and (retry_image or retry_location) and (not self.object_tracker.objects_track_dict[obj_ID]["sliced"]):
+            if not step_success and obj_ID is not None:
                 scores = self.object_tracker.get_score_of_label(object_name)
                 min_score = min(scores)
                 self.object_tracker.objects_track_dict[obj_ID]["scores"] = min_score - 0.01 # move to bottom of totem pole

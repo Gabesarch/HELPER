@@ -19,13 +19,9 @@ class ShortestPathPlanner():
         resolution: magnitude of map resolution in meters
         '''
         self.traversible = traversible
-        # self.angle_value = [0, -2.0*np.pi/num_rots, +2.0*np.pi/num_rots, 0]
         self.du = step_size
-        # self.num_rots = num_rots
         self.DT = DT
         self.DT_rad = np.deg2rad(self.DT)
-        # self.action_list = self.search_actions()
-        # self.obstructed_actions = obstructed_actions
         self.resolution = resolution
         self.actions_inv = actions_inv
         self.obstructed_positions = obstructed_positions
@@ -49,15 +45,12 @@ class ShortestPathPlanner():
         # subsample to resolution of action space
         subsample = int(self.du/self.resolution)
         size_new_W, size_new_H = int(self.traversible.shape[0]/subsample), int(self.traversible.shape[1]/subsample)
-        # traversible_sub = self.traversible[::subsample, ::subsample].astype(np.int32)
         
         # downsample map
         traversible_sub = torch.nn.functional.interpolate(
             torch.from_numpy(self.traversible.astype(np.float32)).unsqueeze(0).unsqueeze(0), 
             size=(size_new_W,size_new_H), 
-            # mode='bilinear',
             mode='nearest',
-            # align_corners=False,
             ).round().squeeze().numpy().astype(np.int32)
 
         if self.obstructed_positions is not None:
@@ -79,7 +72,6 @@ class ShortestPathPlanner():
         if not last_action_success:
             if len(self.obstructed_positions)>0:
                 obstructed_positions_subsample = np.int32(np.round(self.obstructed_positions[-1:]/subsample))
-                # print(obstructed_positions_subsample)
                 traversible_sub[obstructed_positions_subsample[:,1], obstructed_positions_subsample[:,0]] = 0
         
         rows,cols = traversible_sub.shape
@@ -100,17 +92,6 @@ class ShortestPathPlanner():
             M[:,idx] = 0
             M[idx,:] = 0
 
-        # # get manhattan distance of every grid location to every other grid location
-        # X1,Y1,X2,Y2 = np.ogrid[:H,:W,:H,:W]
-        # d_out = np.abs(X2-X1) + np.abs(Y2-Y1)
-        # # d_out = ne.evaluate('(X2-X1) + (Y2-Y1)')
-        # # d_out = numpy.sqrt( (X2-X1)**2 + (Y2-Y1)**2 )
-        # d_out = np.float32(d_out.reshape(H*W, H*W))
-
-        # # get locations of obstacles
-        # where_obstacles = np.where(traversible_action_resolution.reshape(H*W)==False)[0]
-        # d_out[:,where_obstacles] = np.inf
-        # self.graph2 = M
         M = np.ma.masked_values(M, 0)
         traversible_sparse = csr_matrix(M)
         self.graph = traversible_sparse
@@ -151,10 +132,6 @@ class ShortestPathPlanner():
             inds_i, inds_j = np.where(traversible_reachable)
             reachable_where = np.stack([inds_j, inds_i], axis=0)
             dist = distance.cdist(np.expand_dims(goal_subsample_original, axis=0), reachable_where.T) # distance to goal
-            # if True:
-            #     # take into account distance to agent
-            #     dist_to_agent = distance.cdist(np.expand_dims(state_subsample, axis=0), reachable_where.T)
-            #     dist += dist_to_agent
             argmin = np.argmin(dist)
             ind_i, ind_j = inds_i[argmin], inds_j[argmin]
             goal_subsample = np.array([ind_j, ind_i])
@@ -171,16 +148,11 @@ class ShortestPathPlanner():
         i = goal_idx
         map_idxs = np.arange(self.graph.shape[0])
 
-        # if np.all(goal_subsample==state_subsample):
-        #     st()
-
         while i != state_idx:
             if i==-9999:
                 # this means a path could not be found
                 return None, None, [None], [None]
             path_step = list(np.unravel_index(map_idxs[i], (rows, cols)))
-            # path_step[0] = path_step[0]*subsample
-            # path_step[1] = path_step[1]*subsample
             path.append(path_step)
             i = predecessors[i]
         path.append(state_subsample)
@@ -189,7 +161,6 @@ class ShortestPathPlanner():
         action_set = []
         path.reverse()
         path = np.asarray(path)
-        # print("Start path..")
         for i in range(len(path)-1):
             state_diff = path[i+1] - path[i]
             if state_diff[0]==-1: # need to be facing -90 degrees
@@ -202,9 +173,6 @@ class ShortestPathPlanner():
                 desired_angle = np.deg2rad(0)
             relative_yaw = angle - desired_angle
             num_rots = int(np.abs(relative_yaw/self.DT_rad))
-
-            # if i==0:
-            #     st()
             
             # rotate to correct orientatiom
             if relative_yaw<=np.deg2rad(-180):
@@ -224,38 +192,21 @@ class ShortestPathPlanner():
                 else:
                     yaw_action='RotateRight'
                 for _ in range(num_rots):
-                    # print(yaw_action)
                     action_set.append(self.actions_inv[yaw_action])
             else:
                 for _ in range(num_rots):
-                    # print(yaw_action)
                     action_set.append(self.actions_inv[yaw_action])
-
-            # for _ in range(num_rots):
-            #     # print(yaw_action)
-            #     action_set.append(self.actions_inv[yaw_action])
             
             # angle should be desired angle after adjustment
             angle = desired_angle
 
             # move to next waypoint in the path
-            # print("MoveAhead")
             action_set.append(self.actions_inv["MoveAhead"])     
-        # print("End path..")     
 
         visualize = False #True if len(self.obstructed_positions)>0 else False
         if visualize:
             path_vis = np.array(path)
-            # plt.figure(1); plt.clf()
-            # plt.imshow(self.traversible, origin='lower', vmin=0, vmax=1, cmap='Greys')
-            # plt.plot(path_vis[:,0]*subsample,path_vis[:,1]*subsample, '--o', color='green')
-            # plt.plot(self.goal[0],self.goal[1], 'o', color='blue')
-            # plt.plot(state[0],state[1], 'o', color='red')
-            # plt.savefig('data/images/test1.png')
-
-            # traversible_sub = scipy.misc.imresize(self.traversible, size=(int(self.traversible.shape[0]/subsample), int(self.traversible.shape[1]/subsample)), interp='bilinear')
             plt.figure(1); plt.clf()
-            # plt.imshow(self.traversible[::subsample, ::subsample].astype(np.int32))
             plt.imshow(self.traversible_subsample, origin='lower', vmin=0, vmax=1, cmap='Greys')
             plt.plot(path_vis[:,0],path_vis[:,1], '--o', color='green', markersize=2)
             if len(self.obstructed_positions)>0:
@@ -272,12 +223,6 @@ class ShortestPathPlanner():
             plt.imshow(self.traversible, origin='lower', vmin=0, vmax=1, cmap='Greys')
             plt.savefig(f'data/images/planner/map_full_step{self.step_count}.png')
             st()
-
-            # plt.figure(1); plt.clf()
-            # plt.imshow(self.traversible.astype(np.int32), origin='lower', vmin=0, vmax=1, cmap='Greys')
-            # plt.plot(self.goal[0],self.goal[1], 'o', color='blue')
-            # plt.plot(state[0],state[1], 'o', color='red')
-            # plt.savefig('data/images/test3.png')
 
         path[:,0] = path[:,0]*subsample
         path[:,1] = path[:,1]*subsample
