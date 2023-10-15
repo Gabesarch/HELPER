@@ -139,7 +139,7 @@ python get_embedding_examples.
 
 ## Running TEACh benchmark
 
-### Running the TfD evaluation
+### Running the EDH evaluation
 1. (if required) Start x server.
 if an X server is not already running on your machine. First, open a screen with the desired node, and run the following to open an x server on that node:
 ```bash
