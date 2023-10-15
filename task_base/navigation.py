@@ -52,7 +52,7 @@ class Navigation():
         self.obs = Namespace()
 
         if z is None:
-            if args.use_estimated_depth:
+            if args.use_estimated_depth or args.increased_explore:
                 if (0):
                     self.z = [0.4] + list(np.round(np.arange(0.45, 2.06+0.05, 0.05),2))
                     self.obs.camera_aspect_ratio = [args.frame_height, args.frame_width] # <- USE THIS WITH FILM DEPTH ESTIMATION
@@ -882,6 +882,7 @@ class Navigation():
             # plt.imshow(depth)
             # plt.colorbar()
             # plt.savefig('output/images/test.png')
+            # st()
         else:
             depth = obs["depth"]
         depth = self.adjust_depth(depth.copy(), True if "is_holding" not in obs.keys() else obs["is_holding"])
@@ -948,6 +949,7 @@ class Navigation():
         vis=None,
         text='head to angle',
         object_tracker=None, 
+        add_obs=False,
         ):
 
         if self.task.is_done():
@@ -959,7 +961,7 @@ class Navigation():
         rgb, depth = self.get_obs(head_tilt=self.explorer.head_tilt)
         self.update_navigation_obs(rgb,depth, action_successful)
         # whenever not acting - add obs
-        self.add_observation(action, add_obs=False)
+        self.add_observation(action, add_obs=add_obs)
 
         if vis is not None:
             vis.add_frame(rgb, text=text)

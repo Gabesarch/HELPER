@@ -1,22 +1,29 @@
 import sys
 import json
+
 import ipdb
 st = ipdb.set_trace
 from arguments import args
+
 from time import sleep
 from typing import List
 import matplotlib.pyplot as plt
 from ai2thor.controller import Controller
+
 from task_base.object_tracker import ObjectTrack
 from task_base.navigation import Navigation
 from task_base.animation_util import Animation
 from task_base.teach_base import TeachTask
 import pickle
+
 import numpy as np
 import os
+
 import cv2
+
 import csv
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+
 from teach.dataset.dataset import Dataset
 from teach.dataset.definitions import Definitions
 from teach.logger import create_logger
@@ -37,7 +44,9 @@ from teach.eval.compute_metrics import create_new_traj_metrics, evaluate_traj
 from prompt.run_gpt import LLMPlanner
 import copy
 import traceback
+
 from task_base.aithor_base import get_rearrangement_categories
+
 logging.basicConfig(
             level=logging.DEBUG,
             format='%(asctime)s %(levelname)s %(message)s',
@@ -48,7 +57,9 @@ logging.basicConfig(
 from IPython.core.debugger import set_trace
 from PIL import Image
 import wandb
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
 
@@ -62,13 +73,10 @@ class ExecuteController:
         pass
 
     def map_and_explore(self, render=False):
-        '''
-        Map out the scene
-        '''
         self.object_tracker.check_if_centroid_falls_within_map = False
-        max_explore_steps = 150
+        max_explore_steps = max(5, 50 - self.steps_replay)
         if args.load_explore:
-            trial_name = self.tag 
+            trial_name = self.tag #f"{self.edh_instance['instance_id']}_{self.edh_instance['game_id']}" 
             map_path = os.path.join(args.precompute_map_path, trial_name+'.p')
             if os.path.exists(map_path):
                 print(f"Loading {map_path}...")
@@ -117,9 +125,6 @@ class ExecuteController:
                 self.vis.add_frame(self.get_image(self.controller), text="FINAL POS MAPPING")
 
     def random_search(self, target, max_steps=200):
-        '''
-        Randomly select location in map to search
-        '''
         print("Searching for object!")
         if args.use_estimated_depth:
             self.navigation.bring_head_to_angle(angle=0, vis=self.vis)
@@ -240,10 +245,7 @@ class ExecuteController:
         
         return {}
 
-    def search_near_related_objects(self, object_name, max_steps=75):
-        '''
-        Search near mentioned objects 
-        '''
+    def search_near_related_objects(self, object_name, max_steps=150):
         if self.use_llm_search:
             '''
             Get commonsense search locations from LLM
@@ -263,15 +265,13 @@ class ExecuteController:
                     max_steps=max_steps,
                     steps_cur=starts_steps,
                     )
+                # if found_obj or self.teach_task.steps>starts_steps+max_steps:
                 if found_obj or self.teach_task.steps>starts_steps+(len(search_objects) * max_steps):
                     break
         
         return found_obj
 
     def get_object_data(self, object_name):
-        '''
-        get object data from object tracker
-        '''
 
         centroids, labels, IDs = self.object_tracker.get_centroids_and_labels(return_ids=True, object_cat=object_name, include_holding=True)
         if object_name not in labels:
@@ -283,8 +283,7 @@ class ExecuteController:
             start_step = self.teach_task.steps
             print(f"Object {object_name} not in memory.. searching for it")
             # 1) search near objects mentioned in the dialogue & commonsense
-            if self.use_llm_search:
-                found_obj = self.search_near_related_objects(object_name, max_steps=75)
+            found_obj = self.search_near_related_objects(object_name, max_steps=75)
             # 2) deploy random search
             if not found_obj:
                 found_obj = self.random_search(object_name, max_steps=50)
@@ -312,9 +311,6 @@ class ExecuteController:
         object_name=None, 
         obj_ID=None,
         ):
-        '''
-        Navigate to object
-        '''
 
         if self.teach_task.is_done():
             return False
@@ -509,10 +505,8 @@ class ExecuteController:
         retry_image=True, # Retry interaction at multiple keypoints in the image
         retry_location=True, # Retry interaction at multiple locations around the object
         log_error=True, # log error messages in teach base
+        point_2Ds = None, 
         ):
-        '''
-        Execute manipulation actions and update object states
-        '''
 
         if self.teach_task.is_done():
             return False, "task done"
@@ -525,56 +519,68 @@ class ExecuteController:
         print("action name: ", action_name)
         print("Target object: ", object_name)
 
-        if not self.just_navigated or self.navigate_obj_info["object_class"]!=object_name:
-            self.just_navigated = True
-            success = self.navigate(object_name)
+        if point_2Ds is not None:
 
-            if not success:
-                return False, "Navigate error"
+            method_text = "POINT GIVEN"
+            object_class = self.navigate_obj_info["object_class"]
+            object_center = self.navigate_obj_info["object_center"]
+            obj_ID = self.navigate_obj_info["obj_ID"]
+            skip_distance_check = True
 
-        if action_name=="Empty":
-            step_success = self.empty(object_name)
-            return step_success, "No error message here, using Teach Wrapper"
-
-        object_class = self.navigate_obj_info["object_class"]
-        object_center = self.navigate_obj_info["object_center"]
-        obj_ID = self.navigate_obj_info["obj_ID"]
-        if object_center is None:
-            return False, "Object not found in memory, need more exploration."
-
-        def get_point_2Ds(sampling='center'):
-            if self.use_GT_seg_for_interaction:
-                point_2Ds, msg = self.object_tracker.get_2D_point(
-                    object_category=object_name, 
-                    object_id=obj_ID,
-                    sampling=sampling
-                )
-                method_text = "GT SEGMENTATION"
-            else:
-                camX0_T_camX = self.navigation.explorer.get_camX0_T_camX()
-                obj_center_camX0_ = {'x':object_center[0], 'y':object_center[1], 'z':object_center[2]}
-                camX_T_camX0 = utils.geom.safe_inverse_single(camX0_T_camX)
-                point_2Ds, method_text = self.object_tracker.get_2D_point(
-                    camX_T_origin=camX_T_camX0, 
-                    obj_center_camX0_=obj_center_camX0_, 
-                    object_category=object_name, 
-                    rgb=self.get_image(self.controller), 
-                    score_threshold=0.0,
-                    object_id=obj_ID,
-                    sampling=sampling
-                    )
-            return point_2Ds, method_text
-        point_2Ds, method_text = get_point_2Ds()
-
-        if point_2Ds is None:
-            point_2Ds = [] # none detected
-        elif object_name in ["StoveKnob"]:
-            pass
         else:
-            point_2Ds = point_2Ds[0:1] 
-        
-        if action_name=="Open":
-            self.navigation.step_back(vis=self.vis, text=f"Stepping back", object_tracker=self.object_tracker)            
+
+            skip_distance_check = False
+
+            if not self.just_navigated or self.navigate_obj_info["object_class"]!=object_name:
+                self.just_navigated = True
+                success = self.navigate(object_name)
+
+                if not success:
+                    return False, "Navigate error"
+
+            if action_name=="Empty":
+                step_success = self.empty(object_name)
+                return step_success, "No error message here, using Teach Wrapper"
+
+            object_class = self.navigate_obj_info["object_class"]
+            object_center = self.navigate_obj_info["object_center"]
+            obj_ID = self.navigate_obj_info["obj_ID"]
+            if object_center is None:
+                return False, "Object not found in memory, need more exploration."
+
+            def get_point_2Ds(sampling='center'):
+                if self.use_GT_seg_for_interaction:
+                    point_2Ds, msg = self.object_tracker.get_2D_point(
+                        object_category=object_name, 
+                        object_id=obj_ID,
+                        sampling=sampling
+                    )
+                    method_text = "GT SEGMENTATION"
+                else:
+                    camX0_T_camX = self.navigation.explorer.get_camX0_T_camX()
+                    obj_center_camX0_ = {'x':object_center[0], 'y':object_center[1], 'z':object_center[2]}
+                    camX_T_camX0 = utils.geom.safe_inverse_single(camX0_T_camX)
+                    point_2Ds, method_text = self.object_tracker.get_2D_point(
+                        camX_T_origin=camX_T_camX0, 
+                        obj_center_camX0_=obj_center_camX0_, 
+                        object_category=object_name, 
+                        rgb=self.get_image(self.controller), 
+                        score_threshold=0.0,
+                        object_id=obj_ID,
+                        sampling=sampling
+                        )
+                return point_2Ds, method_text
+            point_2Ds, method_text = get_point_2Ds()
+
+            if point_2Ds is None:
+                point_2Ds = [] # none detected
+            elif object_name in ["StoveKnob"]:
+                pass
+            else:
+                point_2Ds = point_2Ds[0:1] 
+            
+            if action_name=="Open":
+                self.navigation.step_back(vis=self.vis, text=f"Stepping back", object_tracker=self.object_tracker)            
 
         step_success = False
         num_tries = 1
@@ -595,11 +601,12 @@ class ExecuteController:
             obj_relative_coord = [max(min(point_2D_[0], 0.998), 0.001), max(min(point_2D_[1], 0.998), 0.001)]
 
             agent_pos = np.asarray(list(self.navigation.explorer.position.values()))
-            distance_to_object = np.sqrt(np.sum((object_center[[0,2]] - agent_pos[[0,2]])**2)) # only use x and z for distance
+            try:
+                distance_to_object = np.sqrt(np.sum((object_center[[0,2]] - agent_pos[[0,2]])**2)) # only use x and z for distance
+            except:
+                st()
 
-            
-
-            if distance_to_object<self.visibility_distance:
+            if skip_distance_check or distance_to_object<self.visibility_distance:
 
                 # attempt interaction
                 prev_image = self.get_image(self.controller).copy()
@@ -665,6 +672,7 @@ class ExecuteController:
                         rgb = np.float32(self.get_image(self.controller))
                         rgb = cv2.circle(rgb, (int(point_2D_[1]* self.web_window_size),int(point_2D_[0]* self.web_window_size)), radius=5, color=(0, 0, 255),thickness=2)
                         self.vis.add_frame(rgb, text=text+text_, add_map=self.add_map)
+                print(self.teach_task.err_message)
 
 
             if not step_success and retry_location and self.obj_center_camX0 is not None: # and self.teach_task.num_fails<int((2/3)*self.teach_task.max_fails):
@@ -756,7 +764,7 @@ class ExecuteController:
                     self.object_tracker.create_new_object_entry(attributes)
                 self.object_tracker.objects_track_dict[obj_ID]["can_use"] = False # object has now been sliced and so its not usable directly
             
-            if not step_success and obj_ID is not None:
+            if not step_success and obj_ID is not None: # and (object_name not in self.NONREMOVABLE_CLASSES) and (retry_image or retry_location) and (not self.object_tracker.objects_track_dict[obj_ID]["sliced"]):
                 scores = self.object_tracker.get_score_of_label(object_name)
                 min_score = min(scores)
                 self.object_tracker.objects_track_dict[obj_ID]["scores"] = min_score - 0.01 # move to bottom of totem pole

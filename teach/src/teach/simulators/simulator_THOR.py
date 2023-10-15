@@ -18,13 +18,6 @@ from ai2thor.build import arch_platform_map, build_name
 from ai2thor.controller import Controller
 from fuzzywuzzy import fuzz
 
-def noop(self):
-    pass
-
-Controller.lock_release = noop
-Controller.unlock_release = noop
-Controller.prune_releases = noop
-
 import teach.meta_data_files.ai2thor_resources as ai2thor_resources
 import teach.meta_data_files.config as config_directory
 from teach.dataset.initialization import Initialization
@@ -2358,7 +2351,7 @@ class SimulatorTHOR(SimulatorBase):
             self.controller.stop()
         else:
             if args.start_startx:
-                from utils.ai2thor_docker.ai2thor_docker.x_server import startx
+                from ai2thor_docker.ai2thor_docker.x_server import startx
                 self.server_port = startx()
                 args.server_port = self.server_port
                 self.server_port = str(self.server_port)

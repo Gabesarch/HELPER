@@ -342,17 +342,6 @@ class SubGoalController(ExecuteController, PlannerController):
             name_to_parsed_name=None,
             )
         self.teach_task.object_tracker = self.object_tracker
-
-        # if object_cat_pickup is not None and in_hand:
-        #     # add holding object
-        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index] = {}
-        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index]['scores'] = 1.01
-        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index]['label'] = object_cat_pickup
-        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index]['locs'] = None
-        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index]['holding'] = True
-        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index]['can_use'] = True
-        #     self.object_tracker.objects_track_dict[self.object_tracker.id_index]['sliced'] = False
-        #     self.object_tracker.id_index += 1
         
         if args.create_movie:
             self.vis = Animation(
@@ -1433,8 +1422,8 @@ def run_teach():
     if args.max_episodes is not None:
         files = files[:args.max_episodes]
 
-    if args.start_index is not None:
-        files = files[args.start_index:]
+    # if args.start_index is not None:
+    #     files = files[args.start_index:]
 
     # initialize wandb
     if args.set_name=="test00":

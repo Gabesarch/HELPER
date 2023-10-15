@@ -204,6 +204,9 @@ The following arguments can be added to run with ground truth:
 ### User Feedback
 To run with user feedback, add `--use_progress_check`. Two additional metric files (for feedback query 1 & 2) will be saved to `./output/metrics/{set_name}`.
 
+### Running the TfD evaluation
+See the `main` branch for how to run the TfD evaluation.
+
 <!-- ### Remote Server Setup
 To run the Ai2THOR simulator on a headless machine, you must either stat an X-server or use Ai2THOR's new headless mode. 
 To start an X-server with any of the scripts, you can simply append `--startx` to the arguments. You can specify the X-server port use the `--server_port` argument.
