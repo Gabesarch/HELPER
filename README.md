@@ -19,9 +19,9 @@
 <!--     <a href="//arxiv.org/abs/2103.16544" target="_blank">
         <img src="https://img.shields.io/badge/venue-CVPR 2021-blue">
     </a> -->
-    <a href="" target="_blank">
+<!--     <a href="" target="_blank">
         <img src="https://img.shields.io/badge/video-YouTube-red">
-    </a>
+    </a> -->
 <!--     <a href="https://join.slack.com/t/ask-prior/shared_invite/zt-oq4z9u4i-QR3kgpeeTAymEDkNpZmCcg" target="_blank">
         <img src="https://img.shields.io/badge/questions-Ask PRIOR Slack-blue">
     </a> -->
