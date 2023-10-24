@@ -1,6 +1,5 @@
 <h1 align="center">
-    HELPER: Instructable and Personalizable Embodied Agents with
-Memory-Augmented Context-Dependent LLM Prompting
+    Open-Ended Instructable Embodied Agents with Memory-Augmented Large Language Models
 </h1>
 
 <p align="left">
@@ -8,21 +7,21 @@ Memory-Augmented Context-Dependent LLM Prompting
         <!-- ai2thor-rearrangement wasn't identifiable by GitHub (on the day this was added), so using the same one as ai2thor -->
 <!--         <img alt="License" src="https://img.shields.io/github/license/allenai/ai2thor.svg?color=blue">
     </a> -->
-    <a href="" target="_blank">
+    <a href="https://helper-agent-llm.github.io/" target="_blank">
         <img alt="Website" src="https://img.shields.io/badge/website-HELPER-orange">
     </a>
 <!--     <a href="//github.com/allenai/ai2thor-rearrangement/releases">
         <img alt="GitHub release" src="https://img.shields.io/github/release/allenai/ai2thor-rearrangement.svg">
     </a> -->
-    <a href="" target="_blank">
+    <a href="https://arxiv.org/abs/2310.15127" target="_blank">
         <img src="https://img.shields.io/badge/arXiv-2207.10761-<COLOR>">
     </a>
 <!--     <a href="//arxiv.org/abs/2103.16544" target="_blank">
         <img src="https://img.shields.io/badge/venue-CVPR 2021-blue">
     </a> -->
-    <a href="" target="_blank">
+<!--     <a href="" target="_blank">
         <img src="https://img.shields.io/badge/video-YouTube-red">
-    </a>
+    </a> -->
 <!--     <a href="https://join.slack.com/t/ask-prior/shared_invite/zt-oq4z9u4i-QR3kgpeeTAymEDkNpZmCcg" target="_blank">
         <img src="https://img.shields.io/badge/questions-Ask PRIOR Slack-blue">
     </a> -->
