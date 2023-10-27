@@ -480,12 +480,10 @@ class SubGoalController(ExecuteController, PlannerController):
                 point_2d = [point_2d[1], point_2d[0]]
             if action_name in ["Text", "Navigation", "SearchObject", "SelectOid", "OpenProgressCheck"]:
                 continue
-            # action_name = action['action_name']
             if action_name in self.action_to_mappedaction_reverse.keys():
                 action_name = self.action_to_mappedaction_reverse[action_name]
 
             self.controller.last_event.frame = images[action_i] #rgb
-            # self.er.replay_actions
             if args.use_gt_depth:
                 self.controller.last_event.depth_frame = depths[action_i]
             else:
@@ -502,8 +500,7 @@ class SubGoalController(ExecuteController, PlannerController):
 
                 centroids, labels, IDs = self.object_tracker.get_centroids_and_labels(return_ids=True, object_cat=object_name, include_holding=False)
 
-                # if len(labels)==0:
-                point_2D_ = point_2d #[action['x'], action['y']]
+                point_2D_ = point_2d
                 # get 3D placement location
                 pad = 10
                 camX0_T_camX = self.navigation.explorer.get_camX0_T_camX()
@@ -527,7 +524,7 @@ class SubGoalController(ExecuteController, PlannerController):
                     dist_thresh_ = args.OT_dist_thresh
                     locs = np.array(centroids)
                     dists = np.sqrt(np.sum((locs - np.expand_dims(c_depth, axis=0))**2, axis=1))
-                    dists_thresh = dists<dist_thresh_ #self.dist_threshold
+                    dists_thresh = dists<dist_thresh_ 
                 else:
                     dists_thresh = 0 # no objects of this class in memory
                 if np.sum(dists_thresh)>0:
@@ -566,16 +563,13 @@ class SubGoalController(ExecuteController, PlannerController):
 
                 input_point2ds = [[int(point_2d[0] * self.web_window_size), int(point_2d[1] * self.web_window_size)]]
 
-                # if object_center is None:
-                #     st()
-
                 success, error = self.execute_action(
                     action_name, 
                     object_name, 
                     object_done_holding=False, 
                     retry_image=False, 
                     retry_location=False,
-                    point_2Ds=input_point2ds, #[[action['x'], action['y']]]
+                    point_2Ds=input_point2ds, 
                     )  
 
                 self.successful_subgoals.append(["Navigate", object_name])
