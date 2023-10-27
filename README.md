@@ -74,7 +74,7 @@ pip install -r requirements.txt
 ```
 
 **(4)** Install [Detectron2](https://detectron2.readthedocs.io/en/latest/tutorials/install.html) (needed for SOLQ detector) with correct PyTorch and CUDA version. 
-E.g. for PyTorch 1.8 & CUDA 11.1:
+E.g. for PyTorch 1.10 & CUDA 11.1:
 ```bash
 python -m pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu111/torch1.10/index.html
 ```
