@@ -1004,6 +1004,7 @@ class SubGoalController(ExecuteController, PlannerController):
                             for action_ in self.edh_instance['driver_actions_future'][action_idx+1:]:
                                 if action['oid']==action_['oid']:
                                     done_object = False
+                                    break
                             if done_object:
                                 subgoals.append("ObjectDone")
                                 objects.append(object_name)
@@ -1074,6 +1075,7 @@ class SubGoalController(ExecuteController, PlannerController):
                         for action_ in self.edh_instance['driver_actions_future'][action_idx+1:]:
                             if action['oid']==action_['oid']:
                                 done_object = False
+                                break
                         if done_object:
                             subgoals.append("ObjectDone")
                             objects.append(object_name)
