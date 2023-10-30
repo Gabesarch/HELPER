@@ -282,6 +282,8 @@ class ExecuteController:
 
             start_step = self.teach_task.steps
             print(f"Object {object_name} not in memory.. searching for it")
+
+            found_obj = {}
             # 1) search near objects mentioned in the dialogue & commonsense
             if self.use_llm_search:
                 found_obj = self.search_near_related_objects(object_name, max_steps=75)

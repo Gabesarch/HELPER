@@ -180,7 +180,7 @@ class SubGoalController(ExecuteController, PlannerController):
                 ]
         self.clean_classes = ["Bowl", "Cup", "Mug", "Plate"]
 
-        if not self.use_gt_subgoals:
+        if not self.use_gt_subgoals or args.use_llm_search or args.run_error_correction_llm:
             self.llm = LLMPlanner(
                 args.gpt_embedding_dir, 
                 fillable_classes=self.FILLABLE_CLASSES, 
@@ -991,11 +991,22 @@ class SubGoalController(ExecuteController, PlannerController):
                 if self.use_gt_subgoals:
                     subgoals = []
                     objects = []
-                    for action in self.edh_instance['driver_actions_future']:
-                        if action["action_name"] in ["Place", "Pickup", 'Open', 'Close', "ToggleOn", "ToggleOff", "Slice"]:
+                    for action_idx in range(len(self.edh_instance['driver_actions_future'])):
+                        action = self.edh_instance['driver_actions_future'][action_idx]
+                        print(action["action_name"])
+                        if action["action_name"] in ["Place", "Pickup", 'Open', 'Close', "ToggleOn", "ToggleOff", "Slice", "Pour"]:
                             object_name = action['oid'].split('|')[0]
+                            if "Sliced" in action['oid'] and "Sliced" not in object_name:
+                                object_name+="Sliced"
                             subgoals.extend(["Navigate", action["action_name"]])
                             objects.extend([object_name, object_name])
+                            done_object = True
+                            for action_ in self.edh_instance['driver_actions_future'][action_idx+1:]:
+                                if action['oid']==action_['oid']:
+                                    done_object = False
+                            if done_object:
+                                subgoals.append("ObjectDone")
+                                objects.append(object_name)
                 else:
                     subgoals, objects, self.search_dict = self.run_llm(self.edh_instance)
                 # print("SUBGOALS:", subgoals)
@@ -1050,11 +1061,22 @@ class SubGoalController(ExecuteController, PlannerController):
             if self.use_gt_subgoals:
                 subgoals = []
                 objects = []
-                for action in self.edh_instance['driver_actions_future']:
-                    if action["action_name"] in ["Place", "Pickup", 'Open', 'Close', "ToggleOn", "ToggleOff", "Slice"]:
+                for action_idx in range(len(self.edh_instance['driver_actions_future'])):
+                    action = self.edh_instance['driver_actions_future'][action_idx]
+                    print(action["action_name"])
+                    if action["action_name"] in ["Place", "Pickup", 'Open', 'Close', "ToggleOn", "ToggleOff", "Slice", "Pour"]:
                         object_name = action['oid'].split('|')[0]
+                        if "Sliced" in action['oid'] and "Sliced" not in object_name:
+                            object_name+="Sliced"
                         subgoals.extend(["Navigate", action["action_name"]])
                         objects.extend([object_name, object_name])
+                        done_object = True
+                        for action_ in self.edh_instance['driver_actions_future'][action_idx+1:]:
+                            if action['oid']==action_['oid']:
+                                done_object = False
+                        if done_object:
+                            subgoals.append("ObjectDone")
+                            objects.append(object_name)
             else:
                 subgoals, objects, self.search_dict = self.run_llm(self.edh_instance)
             print("SUBGOALS:", subgoals)
