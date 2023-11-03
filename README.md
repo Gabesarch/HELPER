@@ -215,14 +215,12 @@ Alternatively, you can use [Ai2THOR's new headless rendering](https://ai2thor.al
 # Citation
 If you like this paper, please cite us:
 ```
-@proceedings{findings-2023-findings-association-linguistics-emnlp,
-    title = "Findings of the Association for Computational Linguistics: EMNLP 2023",
-    editor = "Sarch, Gabriel  and
-      Wu, Yue  and
-      Tarr, Michael and
-      Fragkiadaki, Katerina",
-    month = dec,
-    year = "2023",
-    publisher = "Association for Computational Linguistics",
-}
+@inproceedings{sarch2023helper,
+                        title = "Open-Ended Instructable Embodied Agents with Memory-Augmented Large Language Models",
+                        author = "Sarch, Gabriel and
+                        Wu, Yue and
+                        Tarr, Michael and
+                        Fragkiadaki, Katerina",
+                        booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2023",
+                        year = "2023"}
 ```
