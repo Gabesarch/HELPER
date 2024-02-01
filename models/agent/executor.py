@@ -511,10 +511,8 @@ class ExecuteController:
         retry_image=True, # Retry interaction at multiple keypoints in the image
         retry_location=True, # Retry interaction at multiple locations around the object
         log_error=True, # log error messages in teach base
+        remove_obj_fail=True,
         ):
-        '''
-        Execute manipulation actions and update object states
-        '''
 
         if self.teach_task.is_done():
             return False, "task done"
@@ -543,6 +541,9 @@ class ExecuteController:
         obj_ID = self.navigate_obj_info["obj_ID"]
         if object_center is None:
             return False, "Object not found in memory, need more exploration."
+
+        if action_name=="Open":
+            self.navigation.step_back(vis=self.vis, text=f"Stepping back", object_tracker=self.object_tracker)   
 
         def get_point_2Ds(sampling='center'):
             if self.use_GT_seg_for_interaction:
@@ -574,9 +575,6 @@ class ExecuteController:
             pass
         else:
             point_2Ds = point_2Ds[0:1] 
-        
-        if action_name=="Open":
-            self.navigation.step_back(vis=self.vis, text=f"Stepping back", object_tracker=self.object_tracker)            
 
         step_success = False
         num_tries = 1
@@ -598,8 +596,6 @@ class ExecuteController:
 
             agent_pos = np.asarray(list(self.navigation.explorer.position.values()))
             distance_to_object = np.sqrt(np.sum((object_center[[0,2]] - agent_pos[[0,2]])**2)) # only use x and z for distance
-
-            
 
             if distance_to_object<self.visibility_distance:
 
@@ -668,7 +664,7 @@ class ExecuteController:
                         rgb = cv2.circle(rgb, (int(point_2D_[1]* self.web_window_size),int(point_2D_[0]* self.web_window_size)), radius=5, color=(0, 0, 255),thickness=2)
                         self.vis.add_frame(rgb, text=text+text_, add_map=self.add_map)
 
-
+            step_success_outside = False
             if not step_success and retry_location and self.obj_center_camX0 is not None: # and self.teach_task.num_fails<int((2/3)*self.teach_task.max_fails):
                 print("Trying from a second location...")
                 map_pos = self.navigation.get_map_pos_from_aithor_pos(self.obj_center_camX0)
@@ -684,7 +680,9 @@ class ExecuteController:
                         retry_image=False,
                         retry_location=False,
                         log_error=True,
+                        remove_obj_fail=False,
                         ) 
+                step_success_outside = step_success
                 err_message += f'{self.teach_task.err_message} '
                 help_message += f'{self.teach_task.help_message} '
                 num_tries += 1
@@ -703,13 +701,15 @@ class ExecuteController:
                             retry_image=False,
                             retry_location=False,
                             log_error=True,
+                            remove_obj_fail=False,
                             ) 
+                    step_success_outside = step_success
                     err_message += f'{self.teach_task.err_message} '
                     help_message += f'{self.teach_task.help_message} '
                     num_tries += 1
 
             # Update tracker
-            if step_success and action_name=="Place":
+            if (step_success and not step_success_outside) and action_name=="Place":
                 #centroid is at the point of placement
 
                 # get 3D placement location
@@ -731,6 +731,8 @@ class ExecuteController:
 
                 holding_ID = self.object_tracker.get_ID_of_holding()
                 if holding_ID is not None:
+                    # if not self.object_tracker.objects_track_dict[holding_ID]["sliced"]:
+                    #     # if sliced then object stays at original locatiom
                     self.object_tracker.objects_track_dict[holding_ID]["locs"] = c_depth
                     self.object_tracker.objects_track_dict[holding_ID]["holding"] = False
                     self.object_tracker.objects_track_dict[holding_ID]["scores"] = 1.01
@@ -738,11 +740,12 @@ class ExecuteController:
                         print("Removing placed item from interaction consideration..")
                         self.object_tracker.objects_track_dict[holding_ID]["can_use"] = False
                         self.object_tracker_ids_removed.append(holding_ID)
-            elif step_success and action_name=="Pickup":
+            elif (step_success and not step_success_outside) and action_name=="Pickup":
+                # if not self.object_tracker.objects_track_dict[obj_ID]["sliced"]:
                 self.object_tracker.objects_track_dict[obj_ID]["locs"] = None
                 self.object_tracker.objects_track_dict[obj_ID]["holding"] = True
                 self.object_tracker.objects_track_dict[obj_ID]["scores"] = 1.01
-            elif step_success and action_name=="Slice":
+            elif (step_success and not step_success_outside) and action_name=="Slice":
                 attributes = {
                         'locs':self.object_tracker.objects_track_dict[obj_ID]["locs"],
                         'label':self.object_tracker.objects_track_dict[obj_ID]["label"]+"Sliced",
@@ -756,12 +759,14 @@ class ExecuteController:
                         }
                 for slice_idx in range(6): # slicing creates 6 new sliced objects
                     self.object_tracker.create_new_object_entry(attributes)
+                # self.object_tracker.objects_track_dict[obj_ID]["sliced"] = True
                 self.object_tracker.objects_track_dict[obj_ID]["can_use"] = False # object has now been sliced and so its not usable directly
             
-            if not step_success and obj_ID is not None:
+            if not step_success and obj_ID is not None and remove_obj_fail: # and (object_name not in self.NONREMOVABLE_CLASSES) and (retry_image or retry_location) and (not self.object_tracker.objects_track_dict[obj_ID]["sliced"]):
                 scores = self.object_tracker.get_score_of_label(object_name)
                 min_score = min(scores)
                 self.object_tracker.objects_track_dict[obj_ID]["scores"] = min_score - 0.01 # move to bottom of totem pole
+                # self.object_tracker.objects_track_dict[obj_ID]["can_use"] = False # remove from object list
 
             self.err_message = err_message
             self.help_message = help_message
