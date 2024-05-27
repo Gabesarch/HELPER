@@ -2,10 +2,8 @@
     Open-Ended Instructable Embodied Agents with Memory-Augmented Large Language Models
 </h1>
 
-<h2 align="center">
-    TODO: 
-        - add HELPER-X support for ALFRED, Dialfred, and Tidy Task
-</h2>
+## Todo List
+- [ ] Add HELPER-X support for ALFRED, Dialfred, and Tidy Task
 
 <p align="left">
 <!--     <a href="//github.com/allenai/ai2thor-rearrangement/blob/main/LICENSE">
