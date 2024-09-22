@@ -1,0 +1,18 @@
+- Input:
+Failed subgoal:
+target_toaster = InteractionObject("Toaster", "Toaster")
+target_toaster.toggle_off()
+Execution error: can't toggle object off if it's already off!. Object is already turned off.
+Input instructions: 
+High Level Goal: Place toasted bread on a plate
+Low Level Subgoals: 
+(1) Go to the sliced bread on the table and pick it up
+(2) Place the bread in the toaster and turn on the toaster
+(3) Take the bread out and place it on a plate. 
+- Output:
+'''
+Explain: The agent attempted to toggle off the toaster when it was already toggled off. The toaster is already off so the agent should skip this step.
+
+Plan:
+do_nothing()
+'''

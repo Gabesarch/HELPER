@@ -1,0 +1,18 @@
+dialogue: <Driver> how can I help? <Commander> please serve 4 slices of tomato on a plate. <Driver> sure. <Driver> where can i find the tomato? <Driver> an knife. <Commander> Tomato on countertop and knife in fridge. <Commander> there should be a plate on the right cupboard by the sink. <Driver> completed. <Commander> great work thanks.
+Python script:
+target_tomato = InteractionObject("Tomato", landmark = "CounterTop")
+target_knife = InteractionObject("Knife", landmark = "Fridge") # need knife to slice tomato
+target_knife.go_to() # first get knife
+target_knife.pickup()
+target_tomato.go_to()
+target_tomato.slice()
+target_plate = InteractionObject("Plate", landmark = "Sink", attributes = ["clean"]) # instantiate a clean plate
+# place 4 slices of the cut tomato on the plate
+target_tomato_slice1 = InteractionObject("TomatoSliced") # instantiate first slice of tomato
+target_tomato_slice1.pickup_and_place(target_plate) # pick up the first tomato slice and place it on the plate
+target_tomato_slice2 = InteractionObject("TomatoSliced") # instantiate second slice of tomato
+target_tomato_slice2.pickup_and_place(target_plate) # pick up the second tomato slice and place it on the plate
+target_tomato_slice3 = InteractionObject("TomatoSliced") # instantiate third slice of tomato
+target_tomato_slice3.pickup_and_place(target_plate) # pick up the third tomato slice and place it on the plate
+target_tomato_slice4 = InteractionObject("TomatoSliced") # instantiate fourth slice of tomato
+target_tomato_slice4.pickup_and_place(target_plate) # pick up the fourth tomato slice and place it on the plate

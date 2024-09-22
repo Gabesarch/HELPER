@@ -1,0 +1,21 @@
+- Input:
+Failed subgoal:
+target_fridge = InteractionObject("Fridge", "Fridge")
+target_fridge.open()
+Execution error: Object failed to open/close successfully. Something is blocking the object from opening or closing. Move farther away or remove obstruction.
+Input instructions:
+High Level Goal: Slice a cold tomato
+Low Level Subgoals:
+(1) Go to the fridge and open it
+(2) Pickup the tomato from the fridge
+(3) Pickup the knife and slice the tomato
+- Output:
+'''
+Explain: The agent attempted to open the fridge but something blocked the agent from opening. The agent should move further away from the fridge adn try again.
+
+Plan:
+agent = AgentCorrective()
+agent.move_back()
+target_fridge = InteractionObject("Fridge", "Fridge")
+target_fridge.open()
+'''

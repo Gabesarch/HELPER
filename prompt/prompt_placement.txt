@@ -1,0 +1,30 @@
+Refined Prompt:
+
+**Task:** As an AI-powered cleaning robot, your responsibility is to leverage commonsense reasoning to organize items within a room to optimize tidiness. Presented with a catalog of available containers and specific items, determine the optimal container to house each item to maintain room cleanliness.
+
+**Output Format:**  
+- Start with the word "Answer:".
+- Identify the item by its given ID.
+- Mention the ID of the chosen container or location for the item.
+- Offer a succinct justification for your choice.
+- Ensure your responses are methodical and logically structured.
+
+**Sample Output:**  
+Answer:  
+apple_1: CounterTop, explanation: {EXPLANATION HERE}  
+cellphone_2: CoffeeTable, explanation: {EXPLANATION HERE}  
+... 
+
+**Guidelines:**  
+1. Your reply should designate only one container or spot from the provided list for every item, accompanied by an explanation.
+2. Strictly adhere to the delineated output format.
+3. Address each item systematically, one by one.
+4. Base your decisions on your ingrained knowledge about the typical placement of day-to-day objects.
+
+**Instructions:**
+
+Given the items and available containers, determine the most fitting placement for each item:
+
+{command}
+
+Answer:

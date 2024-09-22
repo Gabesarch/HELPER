@@ -1,0 +1,13 @@
+High Level Goal: Look at the clock under the lamp
+Low Level Goal:
+(1) Turn around and then turn right. Locate the small brown table in the corner,
+(2) Turn on the lamp that is on the small brown table,
+(3) Pick up the clock from the right side of the table
+Python script:
+target_lamp = InteractionObject("DeskLamp", landmark = "SideTable")
+target_lamp.go_to()
+target_lamp.toggle_on()
+target_clock = InteractionObject("Clock", landmark = "SideTable")
+target_clock.go_to()
+target_clock.pickup()
+target_lamp.go_to()

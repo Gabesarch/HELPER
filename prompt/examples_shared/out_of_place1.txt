@@ -1,0 +1,24 @@
+input: Tidy up the house. These are the out of place objects: AlarmClock, Book, CD. These are the receptacles in the current scene: SideTable, Desk, Bed, Box, Dresser.
+Python script:
+# initialize the out of place objects
+target_alarm_clock = InteractionObject("AlarmClock")
+target_book = InteractionObject("Book")
+target_cd = InteractionObject("CD")
+# initialize the placement objects to place the out of place object on
+target_side_table = InteractionObject("SideTable") # a good, commonsense location for the alarm clock is on the side table.
+target_desk = InteractionObject("Desk") # a good, commonsense location for both the book and CD is on the desk.
+# re-position alarm clock to the side table to tidy it up
+target_alarm_clock.go_to()
+target_alarm_clock.pickup()
+target_side_table.go_to()
+target_alarm_clock.place(target_side_table)
+# re-position book to the desk to tidy it up
+target_alarm_clock.go_to()
+target_alarm_clock.pickup()
+target_desk.go_to()
+target_alarm_clock.place(target_desk)
+# re-position CD to the deskto tidy it up
+target_cd.go_to()
+target_cd.pickup()
+target_desk.go_to()
+target_cd.place(target_desk)

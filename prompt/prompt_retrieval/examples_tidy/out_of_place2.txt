@@ -1,0 +1,17 @@
+input: Tidy up the house. These are the out of place objects: Potato, Knife. These are the receptacles in the current scene: DiningTable, Microwave, CoffeeMachine, CounterTop.
+Python script:
+# initialize the out of place objects
+target_potato = InteractionObject("Potato")
+target_knife = InteractionObject("Knife")
+# initialize the placement objects to place the out of place object on
+target_countertop = InteractionObject("CounterTop") # The best, commonsense location for both the potato and knife is on the countertop.
+# re-position potato to the countertop to tidy it up
+target_potato.go_to()
+target_potato.pickup()
+target_countertop.go_to()
+target_potato.place(target_countertop)
+# re-position knife to the countertop to tidy it up
+target_knife.go_to()
+target_knife.pickup()
+target_countertop.go_to()
+target_knife.place(target_countertop)

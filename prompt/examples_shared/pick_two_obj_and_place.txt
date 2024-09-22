@@ -1,0 +1,20 @@
+High Level Goal: Put two watches on the tv stand.
+Low Level Goal:
+(1) Take a half step left and walk until you are about two feet from the fireplace then turn right and walk to the chair then turn right and walk to the red couch and turn left and walk to the chair at the table and turn left.
+(2) Pick up the watch you see on the table.
+(3) Turn left and walk to the red chair then turn right and walk past the red chair and turn left and walk and stand in front of the tv you can see in front of you.
+(4) Put the watch in the middle of the tv stand.
+(5) Turn right and walk to the fireplace and then turn right and walk to the chair.
+(6) Pick up the watch you see on the table.
+(7) Walk back to where you put the first watch.
+(8) Put the watch to the left of the first one.
+Python script:
+target_watch1 = InteractionObject("Watch", landmark = "DiningTable")
+target_watch1.go_to()
+target_watch1.pickup()
+target_tvstand = InteractionObject("TVStand")
+target_tvstand.go_to()
+target_watch1.place(target_tvstand)
+target_watch2 = InteractionObject("Watch", landmark = "Chair")
+target_watch2.pickup_and_place(target_tvstand)
+

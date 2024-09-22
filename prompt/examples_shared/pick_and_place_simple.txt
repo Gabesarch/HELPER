@@ -1,0 +1,13 @@
+High Level Goal: Put a wine bottle on the second from the bottom shelf, in the kitchen.
+Low Level Goal:
+(1) Walk across the room and turn right past the kitchen counter, then walk to the light brown dining table.
+(2) Pick up the wine bottle on the table, between the bread and the chair.
+(3) Turn around and walk to the kitchen counter then make left and walk to the tall, wooden shelf at the end of the room.
+(4) Place the wine bottle on the second shelf from the bottom.
+Python script:
+target_winebottle = InteractionObject("WineBottle", landmark = "DiningTable")
+target_winebottle.go_to()
+target_winebottle.pickup()
+target_shelf = InteractionObject("Shelf")
+target_shelf.go_to()
+target_winebottle.place(target_shelf)

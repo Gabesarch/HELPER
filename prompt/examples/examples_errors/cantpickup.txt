@@ -1,0 +1,23 @@
+- Input:
+Failed subgoal:
+target_tomato = InteractionObject("Tomato", "Tomato")
+target_tomato.slice()
+Execution error: Slice: ObjectInteraction only supported for held object Knife. Must be holding an object first.
+Input instructions:
+High Level Goal: Slice a cold tomato
+Low Level Subgoals:
+(1) Go to the fridge and open it
+(2) Pickup the tomato from the fridge
+(3) Pickup the knife and slice the tomato
+- Output:
+'''
+Explain: The agent attempted to slice a tomato without holding a knife. The agent should first pick up a knife and then try to slice the tomato. 
+
+Plan:
+target_knife = InteractionObject("Knife", "Knife") # need knife to slice tomato
+target_tomato = InteractionObject("Tomato", "Tomato")
+target_knife.go_to()
+target_knife.pickup()
+target_tomato.go_to()
+target_tomato.slice()
+'''

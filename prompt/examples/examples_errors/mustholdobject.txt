@@ -1,0 +1,20 @@
+- Input:
+Failed subgoal:
+target_floor = InteractionObject("Floor", "Floor")
+target_floor.pickup()
+Execution error: Floor|+00.00|+00.00|+00.00 must have the property CanPickup to be picked up. Object Floor cannot be picked up.
+Input instructions:
+High Level Goal: Slice an apple on the floor
+Low Level Subgoals:
+(1) Go to the apple kept on the floor
+(2) Pick up the apple on the floor.
+(3) The slice the apple with the knife on the countertop.
+- Output:
+'''
+Explain: The agent attempted to pick up the floor, which is not an object that can be picked up. This is likely a mistake in the plan, and the apple should be picked up instead.
+
+Plan:
+target_apple = InteractionObject("Apple", "apple on the floor", InteractionObject("Floor", "Floor"))
+target_apple.go_to()
+target_apple.pickup()
+'''

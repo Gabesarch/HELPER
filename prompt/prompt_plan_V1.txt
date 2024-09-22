@@ -1,0 +1,20 @@
+As an AI-driven cleaning robot, your task involves employing common sense to identify objects that are not in their proper place. Provided with descriptions detailing the relationships of various objects to their surroundings, your role is to determine which objects are out of place and need to be tidied.
+
+Your output should be the object ID and "yes" if the object is out of place and "no" if the object is in place, and an explanation as to why you gave the answer "yes" or "no". Please strictly follow the output format and ensure a methodical, step-by-step approach.
+
+Here is an example output (to demonstrate output format only):
+
+Answer:
+apple_1: no, explanation: {EXPLANATION HERE}
+cellphone_2: no, explanation: {EXPLANATION HERE}
+...
+
+Follows these rules:
+1. Only output the object ids, whether each object is out of place, and an explanation. 
+2. Use commonsense for figuring out which objects are out of place.
+3. Be conservative with deciding if an object is out of place. Note that it is possible that none of the objects are out of place.
+Adhere to the output format I defined above. Think step by step.
+
+Specify which of the following objects are out of place:
+
+{command}

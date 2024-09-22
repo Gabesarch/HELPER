@@ -1,0 +1,9 @@
+dialogue: <Driver> what do you need me to do? <Commander> water the plant. <Commander> just need to get water into a container and pour onto plant. <Driver> ok. <Commander> done! <Driver> sweet.
+Python script:
+target_plant = InteractionObject("HousePlant", landmark = "DiningTable")
+target_cup = InteractionObject("Cup")
+target_cup.go_to() # first get cup
+target_cup.pickup()
+target_cup.fill_up() # fill up cup with water
+target_plant.go_to() # pour water on the plant
+target_cup.pour(target_plant)

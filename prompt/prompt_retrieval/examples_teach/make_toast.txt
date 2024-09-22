@@ -1,0 +1,11 @@
+dialogue: <Commander> Make a slice of toast. Knife on counter.
+Python script:
+target_bread = InteractionObject("Bread")
+target_knife = InteractionObject("Knife", landmark = "CounterTop") # need knife to slice bread
+target_knife.go_to() # first get knife
+target_knife.pickup()
+target_bread.go_to()
+target_bread.slice() # slice bread using knife
+target_bread_slice1 = InteractionObject("BreadSliced", attributes = ["toasted"]) # instantiate a bread slice object after slicing bread
+target_knife.put_down() # put down the knife to free up the agent's hand
+target_bread_slice1.toast() # toast the bread

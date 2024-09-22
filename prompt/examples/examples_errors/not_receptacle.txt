@@ -1,0 +1,23 @@
+- Input:
+Failed subgoal:
+target_tomato = InteractionObject("Tomato", "Tomato")
+target_egg = InteractionObject("Egg", "Egg")
+target_egg.place(target_tomato)
+Execution error: This target object is NOT a receptacle! Object is not a receptacle the robot can place items in.
+Input instructions:
+High Level Goal: Make a toast with egg and tomato
+Low Level Subgoals:
+(1) Go to the sliced bread on the table and pick it up
+(2) Place the bread in the toaster and turn on the toaster
+(3) Take the bread out and place it on a plate.
+(4) Pickup the tomato slice and place it on the plate
+(5) Pick up the egg from fridge and place it on the pan
+(6) Pickup the boiled egg from the pan and place it on the plate
+- Output:
+'''
+Explain: The agent attempted to place the egg on a tomato, which is not a valid place to put the egg. The agent should place the egg somewhere else.
+
+Plan:
+target_egg = InteractionObject("Egg", "Egg")
+target_egg.put_down()
+'''
