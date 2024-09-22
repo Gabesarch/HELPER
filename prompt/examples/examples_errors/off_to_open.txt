@@ -1,0 +1,21 @@
+- Input:
+Failed subgoal:
+target_microwave = InteractionObject("Microwave")
+target_microwave.open()
+Execution error: Target must be OFF to open! Object must be turned off before it can be opened.
+Input instructions:
+High Level Goal: Cook the egg in the microwave
+Low Level Subgoals:
+(1) Go to the Counter top and pickup the egg
+(2) Pickup the egg and go to the microwave
+(3) Place the egg in the microwave and turn it on
+(4) Take out the egg from the microwave
+- Output:
+'''
+Explain: The agent attempted to open the microwave, but the microwave is turned on. The microwave should be turned off before opening.
+
+Plan:
+target_microwave = InteractionObject("Microwave")
+target_microwave.toggle_off()
+target_microwave.open()
+'''

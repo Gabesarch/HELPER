@@ -1,0 +1,33 @@
+High Level Goal: Place a washed tomato slice in the microwave.
+Low Level Goal:
+(1) Turn right, move to the corner with the brown shelving unit, turn right again and stop between the window and counter, facing the tomatoes.
+(2) Pick up the tomato closest to you from the counter.
+(3) Carry the tomato to the kitchen sink.
+(4) Place the tomato in the kitchen sink.
+(5) Pick up the knife from the kitchen sink.
+(6) Slice the top off the tomato in the sink.
+(7) Place the knife in the sink.
+(8) Pick up the slice you just cut from the tomato in the sink.
+(9) Place the slice of tomato in the sink, turn the water on, and wash it.
+(10) Remove the freshly washed tomato slice from the sink.
+(11) Place the tomato slice in the microwave and shut the door.
+Python script:
+target_tomato = InteractionObject("Tomato", landmark = "Window", attributes = ["clean"])
+target_tomato.go_to()
+target_tomato.pickup()
+target_sinkbasin = InteractionObject("SinkBasin" landmark = "Sink")
+target_tomato.place(target_sinkbasin)
+target_knife = InteractionObject("Knife", landmark = "Sink")
+target_knife.pickup()
+target_tomato.go_to()
+target_tomato.slice()
+target_knife.place(target_sinkbasin)
+target_tomatosliced = InteractionObject("TomatoSliced", landmark = "SinkBasin")
+target_tomatosliced.go_to()
+target_tomatosliced.pickup()
+target_tomatosliced.clean()
+target_microwave = InteractionObject("Microwave")
+target_microwave.go_to()
+target_microwave.open()
+target_tomatosliced.place(target_microwave)
+target_microwave.close()

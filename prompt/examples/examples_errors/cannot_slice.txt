@@ -1,0 +1,23 @@
+- Input:
+Failed subgoal:
+target_egg = InteractionObject("Egg")
+target_egg.slice()
+Execution error: Egg_d7cc8dfe Does not have the CanBeSliced property! Object cannot be sliced.
+Input instructions:
+High Level Goal: Make a toast with egg and tomato
+Low Level Subgoals:
+(1) Go to the sliced bread and pick it up
+(2) Place the bread in the toaster and turn on the toaster
+(3) Take the bread out and place it on a plate.
+(4) Slice the tomato and place it on the plate
+(5) Pick up the egg from fridge and place it on the pan
+(6) Pickup the boiled egg from the pan and place it on the plate
+- Output:
+'''
+Explain: The agent attempted to slice an egg which cannot be sliced in this case. From the dialogue, it should be the tomato that is sliced. The plan to fix should include slicing the tomato instead.
+
+Plan:
+target_tomato = InteractionObject("Tomato")
+target_tomato.go_to()
+target_tomato.slice()
+'''

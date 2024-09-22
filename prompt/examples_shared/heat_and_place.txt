@@ -1,0 +1,24 @@
+High Level Goal: To heat an apple and place in the black bin. 
+Low Level Goal:
+(1) Turn around and walk to the kitchen island. 
+(2) Pick up the apple in front of the gold colored plate. 
+(3) Walk around the kitchen island and to the stove on the right, look above the stove to face the microwave. 
+(4) Place the apple inside the microwave, heat up/cook the apple, take the apple out of the microwave. 
+(5) Turn left, turn left at the fridge, turn left to face the kitchen island, and look down at the black bin. 
+(6) Place the apple in the bin on the right side. 
+Python script:
+target_apple = InteractionObject("Apple", landmark = "CounterTop")
+target_apple.go_to()
+target_apple.pickup()
+target_microwave = InteractionObject("Microwave")
+target_microwave.go_to()
+target_microwave.open() # open microwave before placing
+target_apple.place(target_microwave) 
+target_microwave.close() # close microwave before toggle on
+target_microwave.toggle_on() # toggle on to heat up & cook
+target_microwave.toggle_off() # Important! toggle off to end heating. Do not try to open microwave without toggle off!
+target_microwave.open() # open microwave before picking
+target_apple.pickup()
+target_trashcan = InteractionObject("GarbageCan")
+target_trashcan.go_to()
+target_apple.place(target_trashcan)

@@ -1,0 +1,17 @@
+dialogue: <Driver> What should I do today? <Commander> hi, make a salad. <Commander> make a slice of tomato. <Driver> where is the tomato? <Driver> where is the knife? <Commander> in the sink. <Driver> Tomato sliced. What next? <Commander> slice the potato. <Driver> Where is the potato? <Commander> in the microwave. <Commander> place all salad components on a plate. <Driver> How many slices of potato? <Commander> one slice of potato and one slice of tomato <Commander> all salad components need to be place on a plate. <Driver> Where is the plate? <Commander> plate. <Commander> try the tomato piece. <Driver> done. <Commander> we are finished.
+Python script:
+target_tomato = InteractionObject("Tomato")
+target_knife = InteractionObject("Knife", landmark = "Sink") # need knife to slice tomato
+target_knife.go_to() # first get knife
+target_knife.pickup()
+target_tomato.go_to()
+target_tomato.slice()
+target_tomato_slice1 = InteractionObject("TomatoSliced") # instantiate a tomato slice object after slicing tomato
+target_potato = InteractionObject("Potato", attributes = ["cooked"]) # want a cooked potato 
+target_potato.go_to()
+target_potato.slice()
+target_potato_slice1 = InteractionObject("PotatoSliced") # instantiate a potato slice object after slicing potato
+target_knife.put_down() # put down the knife to free up the agent's hand
+target_plate = InteractionObject("Plate", attributes = ["clean"]) # place items on a clean plate 
+target_tomato_slice1.pickup_and_place(target_plate) # pick up the tomato slice and place it on the plate
+target_potato_slice1.pickup_and_place(target_plate) # pick up the potato slice and place it on the plate

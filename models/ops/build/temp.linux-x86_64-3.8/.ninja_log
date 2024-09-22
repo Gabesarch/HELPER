@@ -1,0 +1,4 @@
+# ninja log v5
+1	3435	1698420079110048985	/home/gsarch/repo/embodied-llm-alf-improved/models/ops/build/temp.linux-x86_64-3.8/home/gsarch/repo/embodied-llm-alf-improved/models/ops/src/cpu/ms_deform_attn_cpu.o	b4088dc38aed4b81
+1	12083	1698420087752097631	/home/gsarch/repo/embodied-llm-alf-improved/models/ops/build/temp.linux-x86_64-3.8/home/gsarch/repo/embodied-llm-alf-improved/models/ops/src/cuda/ms_deform_attn_cuda.o	7bd791f821e62765
+1	17304	1698420092971127009	/home/gsarch/repo/embodied-llm-alf-improved/models/ops/build/temp.linux-x86_64-3.8/home/gsarch/repo/embodied-llm-alf-improved/models/ops/src/vision.o	d405345d97f21b43

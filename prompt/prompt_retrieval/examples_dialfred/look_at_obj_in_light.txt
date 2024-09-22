@@ -1,0 +1,13 @@
+High Level Goal: Examine a CD under a lamp.
+Low Level Goal:
+(1) Walk to the desk in front of you and turn left towards the shelf above it ",
+(2) Pick up the CD that is laying on the shelf",
+(3) Turn around and walk to the lamp sitting on the stand across the room",
+(4) Turn on the lamp that is on top of the stand"
+Python script:
+target_cd = InteractionObject("CD", landmark = "Shelf")
+target_cd.go_to()
+target_cd.pickup()
+target_lamp = InteractionObject("DeskLamp", landmark = "Cabinet")
+target_lamp.go_to()
+target_lamp.toggle_on()

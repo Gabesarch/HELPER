@@ -1,0 +1,21 @@
+High Level Goal: Place a chilled/cooled/cold mug under the coffee maker
+Low Level Goal:
+(1) Walk forward until the black stools are even with you then turn left to face them,
+(2) Pick up the mug to the left of the butter knife,
+(3) Turn left and walk to the fridge so you are standing in front of it facing it,
+(4) Chill the mug in the fridge then retrieve it and close the fridge,
+(5) Turn around and walk to the coffee maker to the left of the sink,
+(6) Place the mug in it's spot under the coffee maker's spout
+Python script:
+target_mug = InteractionObject("Mug", landmark = "Knife")
+target_mug.pickup()
+target_fridge = InteractionObject("Fridge")
+target_fridge.go_to()
+target_fridge.open() # open fridge before placing object in it
+target_mug.place(target_fridge)
+target_fridge.close() # close to cool
+target_fridge.open() # open before picking up
+target_mug.pickup() # Take out of the fridge after cooling/chilling
+target_coffeemaker = InteractionObject("CoffeeMaker", landmark = "Sink")
+target_coffeemaker.go_to()
+target_mug.place(target_coffeemaker)

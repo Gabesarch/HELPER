@@ -1,0 +1,20 @@
+High Level Goal: Put the watch in the bowl on the nightstand.
+Low Level Goal:
+(1) Turn around, walk around the bookshelf, turn to the desk.
+(2) Pick the watch up off of the desk.
+(3) Put the watch in the bowl on the desk.
+(4) Pick up the bowl off of the desk.
+(5) Walk back around the bookshelf, walk over between the two beds.
+(6) Put the bowl on the nightstand.
+Python script:
+target_watch = InteractionObject("Watch", landmark = "Desk")
+target_watch.go_to()
+target_watch.pickup()
+target_bowl = InteractionObject("Bowl", landmark = "Desk)
+target_bowl.go_to()
+target_watch.place(target_bowl)
+target_bowl.go_to()
+target_bowl.pickup()
+target_nightstand = InteractionObject("SideTable", landmark = "Bed")
+target_nightstand.go_to()
+target_bowl.place(target_nightstand)

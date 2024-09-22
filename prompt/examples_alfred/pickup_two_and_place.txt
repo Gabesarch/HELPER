@@ -1,0 +1,20 @@
+High Level Goal: Put two candlesticks away in the leftmost, lower drawer
+Low Level Goal:
+(1) Turn around to walk towards the bathtub,
+(2) Pick up the candlestick on the ledge of the bathtub,
+(3) Turn to face the drawers on the left,
+(4) Put the candlestick into the leftmost, lower drawer,
+(5) Turn to face the top of the drawers,
+(6) Pick up the rightmost candlestick on top of the drawers,
+(7) Turn to face the drawers on the left,
+(8) Put the other candlestick into the leftmost, lower drawer
+Python script:
+target_candle1 = InteractionObject("Candle", landmark = "Bathtub")
+target_candle1.pickup()
+target_drawer = InteractionObject("Drawer")
+target_drawer.go_to()
+target_drawer.open()
+target_candle1.place(target_drawer)
+target_candle2 = InteractionObject("Candle", landmark = "Drawer")
+target_candle2.pickup_and_place(target_drawer)
+target_drawer.close()

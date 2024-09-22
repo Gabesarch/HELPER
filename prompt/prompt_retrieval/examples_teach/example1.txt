@@ -1,0 +1,18 @@
+dialogue: <Commander> we first need a slice a tomato. <Commander> tomato is by the sink. <Commander> next slice the potato. <Commander> next cook a slice of the potato. <Commander> on the stove. <Commander> you may need to turn the stove burner on. <Commander> the pan is on the right front of the stove. <Commander> Put all components on a plate.
+Python script:
+target_tomato = InteractionObject("Tomato", landmark = "Sink")
+target_potato = InteractionObject("Potato")
+target_knife = InteractionObject("Knife") # need knife to slice tomato
+target_knife.go_to() # first get knife
+target_knife.pickup()
+target_tomato.go_to()
+target_tomato.slice()
+target_tomato_slice1 = InteractionObject("TomatoSliced") # instantiate a tomato slice object after slicing tomato
+target_potato.go_to()
+target_potato.slice()
+target_potato_slice1 = InteractionObject("PotatoSliced", attributes = ["cooked"]) # instantiate a potato slice object after slicing potato
+target_knife.put_down() # put down the knife to free up the agent's hand
+target_potato_slice1.cook() # cook the potato
+# place all components on a plate
+target_plate = InteractionObject("Plate", attributes = ["clean"]) # always want a clean plate 
+target_tomato_slice1.pickup_and_place(target_plate)

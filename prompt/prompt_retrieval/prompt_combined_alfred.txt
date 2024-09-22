@@ -1,0 +1,151 @@
+You are an excellent interpreter of instructions for household tasks. Given a task overview <High Level Goal> and step to perform <Low Level Goal>, you break the instructions down into a sequence of robotic actions.
+
+Write a script using Python and the InteractionObject class and functions defined above that could be executed by a household robot.
+
+Here are a few examples of typical inputs and outputs (only for in-context reference):
+
+Example #1
+High Level Goal: Wash a knife, put it into a drawer
+Low Level Goal:
+(1) Turn left, go to the counter, turn right, go forward a bit, turn right in front of the table,
+(2) Pick up the knife on the table,
+(3) Turn around and go to the sink,
+(4) Put the knife into the sink, open the water, wash the knife, pick up the knife from the sink,
+(5) Turn left, go to the counter,
+(6) Open the second drawer from the top, put the knife in the drawer, close the drawer
+Python script:
+target_knife = InteractionObject("Knife", landmark = "SideTable", attributes = ["clean"])
+target_knife.go_to()
+target_knife.pickup()
+target_knife.clean()
+target_drawer = InteractionObject("Drawer")
+target_drawer.go_to()
+target_drawer.open()
+target_knife.place(target_drawer) # Placing inside the drawer
+
+Example #2
+High Level Goal: Place a chilled mug under the coffee maker
+Low Level Goal:
+(1) Walk forward until the black stools are even with you then turn left to face them,
+(2) Pick up the mug to the left of the butter knife,
+(3) Turn left and walk to the fridge so you are standing in front of it facing it,
+(4) Chill the mug in the fridge then retrieve it and close the fridge,
+(5) Turn around and walk to the coffee maker to the left of the sink,
+(6) Place the mug in it's spot under the coffee maker's spout
+Python script:
+target_stool = InteractionObject("Stool")
+target_stool.go_to()
+target_mug = InteractionObject("Mug", landmark = "Knife")
+target_mug.pickup()
+target_fridge = InteractionObject("Fridge")
+target_fridge.go_to()
+target_fridge.open()
+target_mug.pickup_and_place(target_fridge)
+target_fridge.close() # close to cool
+target_fridge.open() # open before picking up
+target_mug.pickup() # Take out of the fridge after cooling
+target_coffeemaker = InteractionObject("CoffeeMaker", landmark = "Sink")
+target_coffeemaker.go_to()
+target_mug.place(target_coffeemaker)
+
+Example #3
+High Level Goal: Look at the clock under the lamp
+Low Level Goal:
+(1) Turn around and then turn right. Locate the small brown table in the corner,
+(2) Turn on the lamp that is on the small brown table,
+(3) Pick up the clock from the right side of the table
+Python script:
+target_lamp = InteractionObject("DeskLamp", landmark = "SideTable")
+target_lamp.go_to()
+target_lamp.toggle_on()
+target_clock = InteractionObject("Clock", landmark = "SideTable")
+target_clock.go_to()
+target_clock.pickup()
+target_lamp.go_to()
+
+Example #4
+High Level Goal: Cook the apple in the microwave and throw it away
+Low Level Goal:
+(1) Turn to the right and head towards the counter,
+(2) Pick up the apple,
+(3) Turn to the right a bit and face the microwave,
+(4) Open the microwave, place the apple in the microwave, close the door, cook the apple, and the take it out and close the door,
+(5) Turn to the left and turn back right to face the trash can,
+(6) Place the apple in the trash can
+Python script:
+target_apple = InteractionObject("Apple", landmark = "CounterTop", attributes = ["cooked"])
+target_apple.go_to()
+target_apple.pickup()
+target_apple.cook()
+target_trashcan = InteractionObject("GarbageCan")
+target_trashcan.go_to()
+target_apple.place(target_trashcan)
+
+Example #5
+High Level Goal: slice a cooked apple
+Low Level Goal:
+(1) walk forward, turn left, walk towards the stove,
+(2) pick up the knife that is on the counter to the left of the stove,
+(3) turn right, walk forward, turn left to face the microwave,
+(4) open microwave, slice the apple, close the microwave
+Python script:
+target_knife = InteractionObject("Knife", landmark = "CounterTop")
+target_apple = InteractionObject("Apple", landmark = "Microwave", attributes = ["cooked"])
+target_knife.go_to()
+target_knife.pickup()
+target_apple.go_to()
+target_apple.slice()
+target_apple_slice1 = InteractionObject("AppleSliced") # instantiate an apple slice object after slicing apple
+
+Example #6
+High Level Goal: Put two candlesticks away in the leftmost, lower drawer
+Low Level Goal:
+(1) Turn around to walk towards the bathtub,
+(2) Pick up the candlestick on the ledge of the bathtub,
+(3) Turn to face the drawers on the left,
+(4) Put the candlestick into the leftmost, lower drawer,
+(5) Turn to face the top of the drawers,
+(6) Pick up the rightmost candlestick on top of the drawers,
+(7) Turn to face the drawers on the left,
+(8) Put the other candlestick into the leftmost, lower drawer
+Python script:
+target_candle1 = InteractionObject("Candle", landmark = "Bathtub")
+target_candle1.pickup()
+target_drawer = InteractionObject("Drawer")
+target_drawer.go_to()
+target_drawer.open()
+target_candle1.place(target_drawer)
+target_candle2 = InteractionObject("Candle", landmark = "Drawer")
+target_candle2.pickup_and_place(target_drawer)
+target_drawer.close()
+
+Example #7
+High Level Goal: Stacking dishes on the counter
+Low Level Goal:
+(1) Turn to the left and walk to the sink,
+(2) Pick up the spoon from the sink,
+(3) Place the spoon, handle down, into the wine glass that is in the sink,
+(4) Pick up the wine glass containing the spoon from the sink,
+(5) Turn left and walk to the counter above the dishwasher,
+(6) Place the wine glass containing the spoon on the counter
+Python script:
+target_spoon = InteractionObject("Spoon", landmark = "Sink")
+target_wineglass = InteractionObject("Cup", landmark = "Sink")
+target_spoon.pickup_and_place(target_wineglass)
+target_counter = InteractionObject("CounterTop")
+target_wineglass.pickup_and_place(target_counter)
+
+Adhere to these stringent guidelines:
+1. Use only the classes and functions defined previously. Do not create functions that are not provided above.
+2. Make sure that you output a consistent plan. For example, opening of the same object should not occur in successive steps.
+3. Make sure the output is consistent with the proper affordances of objects. For example, a couch cannot be opened, so your output should never include the open() function for this object, but a fridge can be opened.
+4. The input is high level task description and low level subgoals to perform the high level task. Interpret the instructions into robot actions.
+5. Object categories should only be chosen from the following classes: ShowerDoor, Cabinet, CounterTop, Sink, Towel, HandTowel, TowelHolder, SoapBar, ToiletPaper, ToiletPaperHanger, HandTowelHolder, SoapBottle, GarbageCan, Candle, ScrubBrush, Plunger, SinkBasin, Cloth, SprayBottle, Toilet, Faucet, ShowerHead, Box, Bed, Book, DeskLamp, BasketBall, Pen, Pillow, Pencil, CellPhone, KeyChain, Painting, CreditCard, AlarmClock, CD, Laptop, Drawer, SideTable, Chair, Blinds, Desk, Curtains, Dresser, Watch, Television, WateringCan, Newspaper, FloorLamp, RemoteControl, HousePlant, Statue, Ottoman, ArmChair, Sofa, DogBed, BaseballBat, TennisRacket, VacuumCleaner, Mug, ShelvingUnit, Shelf, StoveBurner, Apple, Lettuce, Bottle, Egg, Microwave, CoffeeMachine, Fork, Fridge, WineBottle, Spatula, Bread, Tomato, Pan, Cup, Pot, SaltShaker, Potato, PepperShaker, ButterKnife, StoveKnob, Toaster, DishSponge, Spoon, Plate, Knife, DiningTable, Bowl, LaundryHamper, Vase, Stool, CoffeeTable, Poster, Bathtub, TissueBox, Footstool, BathtubBasin, ShowerCurtain, TVStand, Boots, RoomDecor, PaperTowelRoll, Ladle, Kettle, Safe, GarbageBag, TeddyBear, TableTopDecor, Dumbbell, Desktop, AluminumFoil, Window, LightSwitch, AppleSliced, BreadSliced, LettuceSliced, PotatoSliced, TomatoSliced
+6. You can only pick up one object at a time. If the agent is holding an object, the agent should place or put down the object before attempting to pick up a second object.
+7. Each object instance should instantiate a different InteractionObject class even if two object instances are the same object category.
+8. Always focus on solving the high level goal. Low level instructions should only be used to guide and plan better.
+9. Before performing each action, check if that action is allowed for a particular receptacle class. A few examples have been given in API documentation.
+10. Check if the receptacle needs to be opened before placing the object. If yes, then open the receptacle before placing the object.
+Follow the output format provided earlier. Think step by step to carry out the instruction.
+
+Write a Python script that could be executed by a household robot:

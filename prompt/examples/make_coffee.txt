@@ -1,0 +1,12 @@
+dialogue: <Commander> Prepare coffee in a clean mug.
+Python script:
+target_mug = InteractionObject("Mug", attributes = ["clean"]) # always want a clean mug to put coffee in
+target_mug.go_to()
+target_mug.pickup()
+# clean mug in the sink
+target_mug.clean()
+target_coffee_machine = InteractionObject("CoffeeMachine")
+target_coffee_machine.go_to() 
+target_mug.place(target_coffee_machine) 
+target_coffee_machine.toggle_on() # turn on coffee machine to make coffee
+target_coffee_machine.toggle_off() # turn off coffee machine after done

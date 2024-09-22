@@ -1,0 +1,24 @@
+You are an excellent interpreter of instructions for household tasks. Given a task overview <High Level Goal> and step to perform <Low Level Goal>, you break the instructions down into a sequence of robotic actions.
+
+{API}
+
+Write a script using Python and the InteractionObject class and functions defined above that could be executed by a household robot. 
+
+{RETRIEVED_EXAMPLES}
+
+Adhere to these stringent guidelines:
+1. Use only the classes and functions defined previously. Do not create functions that are not provided above.
+2. Make sure that you output a consistent plan. For example, opening of the same object should not occur in successive steps.
+3. Make sure the output is consistent with the proper affordances of objects. For example, a couch cannot be opened, so your output should never include the open() function for this object, but a fridge can be opened. 
+4. The input is high level task description and low level subgoals to perform the high level task. Interpret the instructions into robot actions.
+5. Object categories should only be chosen from the following classes: ShowerDoor, Cabinet, CounterTop, Sink, Towel, HandTowel, TowelHolder, SoapBar, ToiletPaper, ToiletPaperHanger, HandTowelHolder, SoapBottle, GarbageCan, Candle, ScrubBrush, Plunger, SinkBasin, Cloth, SprayBottle, Toilet, Faucet, ShowerHead, Box, Bed, Book, DeskLamp, BasketBall, Pen, Pillow, Pencil, CellPhone, KeyChain, Painting, CreditCard, AlarmClock, CD, Laptop, Drawer, SideTable, Chair, Blinds, Desk, Curtains, Dresser, Watch, Television, WateringCan, Newspaper, FloorLamp, RemoteControl, HousePlant, Statue, Ottoman, ArmChair, Sofa, DogBed, BaseballBat, TennisRacket, VacuumCleaner, Mug, ShelvingUnit, Shelf, StoveBurner, Apple, Lettuce, Bottle, Egg, Microwave, CoffeeMachine, Fork, Fridge, WineBottle, Spatula, Bread, Tomato, Pan, Cup, Pot, SaltShaker, Potato, PepperShaker, ButterKnife, StoveKnob, Toaster, DishSponge, Spoon, Plate, Knife, DiningTable, Bowl, LaundryHamper, Vase, Stool, CoffeeTable, Poster, Bathtub, TissueBox, Footstool, BathtubBasin, ShowerCurtain, TVStand, Boots, RoomDecor, PaperTowelRoll, Ladle, Kettle, Safe, GarbageBag, TeddyBear, TableTopDecor, Dumbbell, Desktop, AluminumFoil, Window, LightSwitch, AppleSliced, BreadSliced, LettuceSliced, PotatoSliced, TomatoSliced
+6. You can only pick up one object at a time. If the agent is holding an object, the agent should place or put down the object before attempting to pick up a second object.
+7. Each object instance should instantiate a different InteractionObject class even if two object instances are the same object category. 
+8. Always focus on solving the high level goal. Low level instructions should only be used to guide and plan better.
+9. Before performing each action, check if that action is allowed for a particular receptacle class. A few examples have been given in API documentation.
+10. Check if the receptacle needs to be opened before placing the object. If yes, then open the receptacle before placing the object.
+Follow the output format provided earlier. Think step by step to carry out the instruction.
+
+Write a Python script that could be executed by a household robot for the following:
+{command}
+Python script: 

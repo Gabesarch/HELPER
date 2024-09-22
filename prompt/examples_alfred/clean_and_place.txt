@@ -1,0 +1,17 @@
+High Level Goal: Wash a knife, put it into a drawer
+Low Level Goal:
+(1) Turn left, go to the counter, turn right, go forward a bit, turn right in front of the table,
+(2) Pick up the knife on the table,
+(3) Turn around and go to the sink,
+(4) Put the knife into the sink, open the water, wash the knife, pick up the knife from the sink,
+(5) Turn left, go to the counter,
+(6) Open the second drawer from the top, put the knife in the drawer, close the drawer
+Python script:
+target_knife = InteractionObject("Knife", landmark = "SideTable", attributes = ["clean"])
+target_knife.go_to()
+target_knife.pickup()
+target_knife.clean()
+target_drawer = InteractionObject("Drawer")
+target_drawer.go_to()
+target_drawer.open()
+target_knife.place(target_drawer) # Placing inside the drawer

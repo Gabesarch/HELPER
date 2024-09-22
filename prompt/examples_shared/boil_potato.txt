@@ -1,0 +1,14 @@
+dialogue: <Driver> what can i for you today? <Commander> could you boil a potato? <Driver> sure thing! <Driver> are there any pots? <Commander> pots for boiling potato? <Driver> yes. <Commander> just the one that you were holding earlier and a couple others of the same size. <Commander> does it not fit in the sink? <Driver> no. <Commander> see that mug of water next to the pot? <Driver> yes. <Commander> pour the mugs water into the pot. <Driver> thanks. <Commander> you're welcome! <Commander> excellent thank you!
+Python script:
+target_pot = InteractionObject("Pot")
+target_mug = InteractionObject("Mug", landmark = "Pot", attributes = ["clean"]) # always want a clean mug
+target_mug.go_to()
+target_mug.pickup()
+target_mug.pour(target_pot)
+target_mug.put_down() # put down mug on any location to free up agent's hand
+target_potato = InteractionObject("Potato")
+target_potato.pickup_and_place(target_pot) # pick up the potato and place it in the pot
+target_stove_knob = InteractionObject("StoveKnob") # turn on the stove to boil potato
+target_stove_knob.go_to()
+target_stove_knob.toggle_on() # boil water
+target_stove_knob.toggle_off() # complete boiling process by turning off

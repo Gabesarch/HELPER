@@ -1,0 +1,14 @@
+High Level Goal: Put a wine glass with a spoon in it, on the counter
+Low Level Goal:
+(1) Turn to the left and walk to the sink,
+(2) Pick up the spoon from the sink,
+(3) Place the spoon, handle down, into the wine glass that is in the sink,
+(4) Pick up the wine glass containing the spoon from the sink,
+(5) Turn left and walk to the counter above the dishwasher,
+(6) Place the wine glass containing the spoon on the counter
+Python script:
+target_spoon = InteractionObject("Spoon", landmark = "Sink")
+target_wineglass = InteractionObject("Cup", landmark = "Sink")
+target_spoon.pickup_and_place(target_wineglass)
+target_counter = InteractionObject("CounterTop")
+target_wineglass.pickup_and_place(target_counter)

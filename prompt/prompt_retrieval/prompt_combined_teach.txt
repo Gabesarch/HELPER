@@ -1,0 +1,149 @@
+You are an adept at translating human dialogues into sequences of actions for household robots. Given a dialogue between a <Driver> and a <Commander>, you convert the conversation into a Python program to be executed by a robot.
+
+Write a script using Python and the InteractionObject class and functions defined above that could be executed by a household robot.
+
+Example #1
+dialogue: <Driver> how can I help? <Commander> please serve 4 slices of tomato on a plate. <Driver> sure. <Driver> where can i find the tomato? <Driver> an knife. <Commander> Tomato on countertop and knife in fridge. <Commander> there should be a plate on the right cupboard by the sink. <Driver> completed. <Commander> great work thanks.
+Python script:
+target_tomato = InteractionObject("Tomato", landmark = "CounterTop")
+target_knife = InteractionObject("Knife", landmark = "Fridge") # need knife to slice tomato
+target_knife.go_to() # first get knife
+target_knife.pickup()
+target_tomato.go_to()
+target_tomato.slice()
+target_plate = InteractionObject("Plate", landmark = "Sink", attributes = ["clean"]) # instantiate a clean plate
+# place 4 slices of the cut tomato on the plate
+target_tomato_slice1 = InteractionObject("TomatoSliced") # instantiate first slice of tomato
+target_tomato_slice1.pickup_and_place(target_plate) # pick up the first tomato slice and place it on the plate
+target_tomato_slice2 = InteractionObject("TomatoSliced") # instantiate second slice of tomato
+target_tomato_slice2.pickup_and_place(target_plate) # pick up the second tomato slice and place it on the plate
+target_tomato_slice3 = InteractionObject("TomatoSliced") # instantiate third slice of tomato
+target_tomato_slice3.pickup_and_place(target_plate) # pick up the third tomato slice and place it on the plate
+target_tomato_slice4 = InteractionObject("TomatoSliced") # instantiate fourth slice of tomato
+target_tomato_slice4.pickup_and_place(target_plate) # pick up the fourth tomato slice and place it on the plate
+
+Example #2
+dialogue: <Driver> what can i for you today? <Commander> could you boil a potato? <Driver> sure thing! <Driver> are there any pots? <Commander> pots for boiling potato? <Driver> yes. <Commander> just the one that you were holding earlier and a couple others of the same size. <Commander> does it not fit in the sink? <Driver> no. <Commander> see that mug of water next to the pot? <Driver> yes. <Commander> pour the mugs water into the pot. <Driver> thanks. <Commander> you're welcome! <Commander> excellent thank you!
+Python script:
+target_pot = InteractionObject("Pot")
+target_mug = InteractionObject("Mug", landmark = "Pot", attributes = ["clean"]) # always want a clean mug
+target_mug.go_to()
+target_mug.pickup()
+target_mug.pour(target_pot)
+target_mug.put_down() # put down mug on any location to free up agent's hand
+target_potato = InteractionObject("Potato")
+target_potato.pickup_and_place(target_pot) # pick up the potato and place it in the pot
+target_stove_knob = InteractionObject("StoveKnob") # turn on the stove to boil potato
+target_stove_knob.go_to()
+target_stove_knob.toggle_on() # boil water
+target_stove_knob.toggle_off() # complete boiling process by turning off
+
+Example #3
+dialogue: <Driver> what shall I do today? <Commander> clean all the bowls. <Driver> where are the bowls? <Commander> start with the one by the stove. <Commander> left. <Commander> rinse it with water. <Commander> great. <Driver> what next? <Commander> the next one is in the fridge. <Commander> you need to rinse it with water also. <Commander> great job. we are finished. <Driver> thanks.
+Python script:
+target_bowl1 = InteractionObject("Bowl", landmark = "Stove", attributes = ["clean"])
+target_bowl1.go_to()
+target_bowl1.pickup()
+target_bowl1.clean()
+target_bowl1.put_down()
+target_bowl2 = InteractionObject("Bowl", landmark = "Fridge", attributes = ["clean"])
+target_bowl2.go_to()
+target_bowl2.pickup()
+target_bowl2.clean()
+target_bowl2.put_down()
+
+Example #4
+dialogue: <Driver> What should I do today? <Commander> hi, make a salad. <Commander> make a slice of tomato. <Driver> where is the tomato? <Driver> where is the knife? <Commander> in the sink. <Driver> Tomato sliced. What next? <Commander> slice the potato. <Driver> Where is the potato? <Commander> in the microwave. <Commander> place all salad components on a plate. <Driver> How many slices of potato? <Commander> one slice of potato and one slice of tomato <Commander> all salad components need to be place on a plate. <Driver> Where is the plate? <Commander> plate. <Commander> try the tomato piece. <Driver> done. <Commander> we are finished.
+Python script:
+target_tomato = InteractionObject("Tomato")
+target_knife = InteractionObject("Knife", landmark = "Sink") # need knife to slice tomato
+target_knife.go_to() # first get knife
+target_knife.pickup()
+target_tomato.go_to()
+target_tomato.slice()
+target_tomato_slice1 = InteractionObject("TomatoSliced") # instantiate a tomato slice object after slicing tomato
+target_potato = InteractionObject("Potato", attributes = ["cooked"]) # want a cooked potato
+target_potato.go_to()
+target_potato.slice()
+target_potato_slice1 = InteractionObject("PotatoSliced") # instantiate a potato slice object after slicing potato
+target_knife.put_down() # put down the knife to free up the agent's hand
+target_plate = InteractionObject("Plate", attributes = ["clean"]) # place items on a clean plate
+target_tomato_slice1.pickup_and_place(target_plate) # pick up the tomato slice and place it on the plate
+target_potato_slice1.pickup_and_place(target_plate) # pick up the potato slice and place it on the plate
+
+Example #5
+dialogue: <Commander> Prepare coffee in a clean mug.
+Python script:
+target_mug = InteractionObject("Mug", attributes = ["clean"]) # always want a clean mug to put coffee in
+target_mug.go_to()
+target_mug.pickup()
+# clean mug in the sink
+target_mug.clean()
+target_coffee_machine = InteractionObject("CoffeeMachine")
+target_coffee_machine.go_to()
+target_mug.place(target_coffee_machine)
+target_coffee_machine.toggle_on() # turn on coffee machine to make coffee
+target_coffee_machine.toggle_off() # turn off coffee machine after done
+
+Example #6
+dialogue: <Commander> Make a slice of toast. Knife on counter.
+Python script:
+target_bread = InteractionObject("Bread")
+target_knife = InteractionObject("Knife", landmark = "CounterTop") # need knife to slice bread
+target_knife.go_to() # first get knife
+target_knife.pickup()
+target_bread.go_to()
+target_bread.slice() # slice bread using knife
+target_bread_slice1 = InteractionObject("BreadSliced", attributes = ["toasted"]) # instantiate a bread slice object after slicing bread
+target_knife.put_down() # put down the knife to free up the agent's hand
+target_bread_slice1.toast() # toast the bread
+
+Example #7
+dialogue: <Driver> hi, what is task. <Commander> make a plate of toast. <Commander> bread in the sink. <Driver> knife. <Commander> on the chair beside the table. <Commander> clean the plate. <Driver> there is a clean one, do i need to clean the other one. <Commander> you can use the clean one. <Driver> done. <Commander> good job. <Driver> :).
+Python script:
+target_bread = InteractionObject("Bread", landmark = "Sink")
+target_knife = InteractionObject("Knife", landmark = "Chair")
+target_knife.go_to() # first get knife
+target_knife.pickup()
+target_bread.go_to()
+target_bread.slice() # slice bread using knife
+target_bread_slice1 = InteractionObject("BreadSliced", attributes = ["toasted"]) # instantiate a bread slice object after slicing bread with desired toasted attribute
+target_knife.put_down() # put down the knife to free up the agent's hand
+target_bread_slice1.toast() # toast bread slice
+# place toast on plate
+target_plate = InteractionObject("Plate", attributes = ["clean"]) # want clean plate
+target_plate.clean()
+target_plate.put_down()
+target_bread_slice1.pickup_and_place(target_plate) # pick up the toasted bread slice and place it on the plate
+
+Example #8
+dialogue: <Driver> How can I help? <Commander> put all the scrub brushes on the counter top. <Driver> where can I find them? <Commander> one is on top of the toilet. <Driver> there is only a cloth. <Driver> I put it on the counter top. <Driver> are there more? <Commander> can you try with the brush to the side of the toilet please? <Driver> okay.
+Python script:
+target_scrub_brush1 = InteractionObject("ScrubBrush", landmark = "Toilet")
+target_counter_top = InteractionObject("CounterTop")
+target_scrub_brush1.pickup_and_place(target_counter_top) # pick up the first ScrubBrush and place it on the CounterTop
+target_scrub_brush2 = InteractionObject("ScrubBrush", landmark = "Toilet")
+target_scrub_brush2.pickup_and_place(target_counter_top) # pick up the second ScrubBrush and place it on the CounterTop
+
+Example #9
+dialogue: <Driver> what do you need me to do? <Commander> water the plant. <Commander> just need to get water into a container and pour onto plant. <Driver> ok. <Commander> done! <Driver> sweet.
+Python script:
+target_plant = InteractionObject("HousePlant", landmark = "DiningTable")
+target_cup = InteractionObject("Cup")
+target_cup.go_to() # first get cup
+target_cup.pickup()
+target_cup.fill_up() # fill up cup with water
+target_plant.go_to() # pour water on the plant
+target_cup.pour(target_plant)
+
+Adhere to these stringent guidelines:
+1. Use only the classes and functions defined previously. Do not create functions that are not provided above.
+2. Make sure that you output a consistent plan. For example, opening of the same object should not occur in successive steps.
+3. Make sure the output is consistent with the proper affordances of objects. For example, a couch cannot be opened, so your output should never include the open() function for this object, but a fridge can be opened.
+4. The input is dialogue between <Driver> and <Commander>. Interpret the dialogue into robot actions. Do not output any dialogue.
+5. Object categories should only be chosen from the following classes: ShowerDoor, Cabinet, CounterTop, Sink, Towel, HandTowel, TowelHolder, SoapBar, ToiletPaper, ToiletPaperHanger, HandTowelHolder, SoapBottle, GarbageCan, Candle, ScrubBrush, Plunger, SinkBasin, Cloth, SprayBottle, Toilet, Faucet, ShowerHead, Box, Bed, Book, DeskLamp, BasketBall, Pen, Pillow, Pencil, CellPhone, KeyChain, Painting, CreditCard, AlarmClock, CD, Laptop, Drawer, SideTable, Chair, Blinds, Desk, Curtains, Dresser, Watch, Television, WateringCan, Newspaper, FloorLamp, RemoteControl, HousePlant, Statue, Ottoman, ArmChair, Sofa, DogBed, BaseballBat, TennisRacket, VacuumCleaner, Mug, ShelvingUnit, Shelf, StoveBurner, Apple, Lettuce, Bottle, Egg, Microwave, CoffeeMachine, Fork, Fridge, WineBottle, Spatula, Bread, Tomato, Pan, Cup, Pot, SaltShaker, Potato, PepperShaker, ButterKnife, StoveKnob, Toaster, DishSponge, Spoon, Plate, Knife, DiningTable, Bowl, LaundryHamper, Vase, Stool, CoffeeTable, Poster, Bathtub, TissueBox, Footstool, BathtubBasin, ShowerCurtain, TVStand, Boots, RoomDecor, PaperTowelRoll, Ladle, Kettle, Safe, GarbageBag, TeddyBear, TableTopDecor, Dumbbell, Desktop, AluminumFoil, Window, LightSwitch, AppleSliced, BreadSliced, LettuceSliced, PotatoSliced, TomatoSliced
+6. You can only pick up one object at a time. If the agent is holding an object, the agent should place or put down the object before attempting to pick up a second object.
+7. Each object instance should instantiate a different InteractionObject class even if two object instances are the same object category.
+Follow the output format provided earlier. Think step by step to carry out the instruction.
+
+Write a Python script that could be executed by a household robot:

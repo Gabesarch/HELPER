@@ -1,0 +1,23 @@
+High Level Goal: Set a chilled bottle of wine on the table.
+Low Level Goal:
+(1) Go across the room to the table.
+(2) Pick up the wine bottle on the table.
+(3) Go across the room to the fridge.
+(4) Chill the wine in the fridge.
+(5) Turn right and go to the table on the left past the fridge.
+(6) Set the chilled wine down on the front right corner of the table.
+Python script:
+target_winebottle = InteractionObject("WineBottle", landmark = "DiningTable")
+target_winebottle.go_to()
+target_winebottle.pickup()
+target_fridge = InteractionObject("Fridge")
+target_fridge.go_to()
+target_fridge.open()
+target_winebottle.place(target_fridge)
+target_fridge.close()
+target_fridge.open()
+target_winebottle.go_to()
+target_winebottle.pickup()
+target_diningtable = InteractionObject("DiningTable")
+target_diningtable.go_to()
+target_winebottle.place(target_diningtable)

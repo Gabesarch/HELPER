@@ -1,0 +1,37 @@
+High Level Goal: Put a cooked/heated up slice of tomato in a sink.
+Low Level Goal:
+(1) Go forward all the way, turn right, go forward all the way to the counter with the toaster.
+(2) Take the knife on the counter from behind the plate.
+(3) Stay at the counter.
+(4) Cut the tomato on the counter into slices.
+(5) Turn to the left.
+(6) Put the knife on the counter to the right of the tomato.
+(7) Turn to the right.
+(8) Take a slice of tomato from the counter.
+(9) Turn around, go forward, turn right to the oven.
+(10) Heat/cook the tomato in the microwave about the oven then take it out.
+(11) Turn around, go forward, turn left at the sink, go to the sink.
+(12) Put the tomato on the right side of the sink.
+Python script:
+target_knife = InteractionObject("Knife", landmark = "CounterTop")
+target_knife.pickup()
+target_tomato = InteractionObject("Tomato", landmark = "CounterTop")
+target_tomato.go_to()
+target_tomato.slice()
+target_countertop = InteractionObject("CounterTop")
+target_knife.place(target_countertop)
+target_tomatosliced = InteractionObject("TomatoSliced", landmark = "CounterTop")
+target_tomatosliced.go_to()
+target_tomatosliced.pickup()
+target_microwave = InteractionObject("Microwave")
+target_microwave.go_to()
+target_microwave.open() # open microwave before placing
+target_tomatosliced.place(target_microwave) 
+target_microwave.close() # close microwave before toggle on
+target_microwave.toggle_on() # toggle on to heat up
+target_microwave.toggle_off() # Important! toggle off to end heating. Do not try to open microwave without toggle off!
+target_microwave.open() # open microwave before picking
+target_tomatosliced.pickup()
+target_sink = InteractionObject("Sink")
+target_sink.go_to()
+target_tomatosliced.place(target_sink)
