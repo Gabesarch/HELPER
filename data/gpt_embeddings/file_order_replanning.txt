@@ -1,0 +1,11 @@
+not_receptacle.txt
+cannot_openclose.txt
+mustholdobject.txt
+too_far.txt
+cannot_slice.txt
+occluded.txt
+already_toggled.txt
+cannottoggle.txt
+too_full.txt
+cantpickup.txt
+off_to_open.txt

@@ -1,0 +1,12 @@
+prompt/examples/clean_all_bowls.txt
+prompt/examples/put_all_scrub_brushes_on_counter.txt
+prompt/examples/example1.txt
+prompt/examples/example2.txt
+prompt/examples/make_a_salad.txt
+prompt/examples/make_toast.txt
+prompt/examples/N_tomato_slices_plate.txt
+prompt/examples/plate_toast.txt
+prompt/examples/make_coffee.txt
+prompt/examples/water_plant.txt
+prompt/examples/boil_potato.txt
+prompt/examples/examples_custom/gabe_sandwich.txt

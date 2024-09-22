@@ -101,7 +101,7 @@ teach_download
 ```
 
 ### Model Checkpoints and GPT Embeddings
-To our model on the TEACh dataset, you'll first need the GPT embeddings for example retrieval:
+<!-- To our model on the TEACh dataset, you'll first need the GPT embeddings for example retrieval:
 1. Download GPT embeddings for example retrieval: [here](https://drive.google.com/file/d/1kqZZXdglNICjDlDKygd19JyyBzkkk-UL/view?usp=sharing). Unzip it to get the gpt_embedding folder in `./data` folder (or in a desired foldered and set --gpt_embedding_dir argument). 
 Alternatively, you can download the file with gdown (`pip install gdown`): 
 ```bash
@@ -109,18 +109,18 @@ cd data
 gdown 1kqZZXdglNICjDlDKygd19JyyBzkkk-UL
 unzip gpt_embeddings.zip
 rm gpt_embeddings.zip
-```
+``` -->
 
 TO run our model with estimated depth and segmentation, download the SOLQ and ZoeDepth checkpoints:
 
-2. Download SOLQ checkpoint: [here](https://drive.google.com/file/d/1hTCtTuygPCJnhAkGeVPzWGHiY3PHNE2j/view?usp=sharing). Place it in the `./checkpoints` folder (or anywhere you want and specify the path with `--solq_checkpoint`). 
+1. Download SOLQ checkpoint: [here](https://drive.google.com/file/d/1hTCtTuygPCJnhAkGeVPzWGHiY3PHNE2j/view?usp=sharing). Place it in the `./checkpoints` folder (or anywhere you want and specify the path with `--solq_checkpoint`). 
 Alternatively, you can download the file with gdown (`pip install gdown`): 
 ```bash
 cd checkpoints
 gdown 1hTCtTuygPCJnhAkGeVPzWGHiY3PHNE2j
 ```
 
-3. Download ZoeDepth checkpoint: [here](https://drive.google.com/file/d/1gMe8_5PzaNKWLT5OP-9KKEYhbNxRjk9F/view?usp=drive_link). Place it in the `./checkpoints` folder (or anywhere you want and specify the path with `--zoedepth_checkpoint`). (Also make sure you clone the ZoeDepth repo: `git clone https://github.com/isl-org/ZoeDepth.git`)
+2. Download ZoeDepth checkpoint: [here](https://drive.google.com/file/d/1gMe8_5PzaNKWLT5OP-9KKEYhbNxRjk9F/view?usp=drive_link). Place it in the `./checkpoints` folder (or anywhere you want and specify the path with `--zoedepth_checkpoint`). (Also make sure you clone the ZoeDepth repo: `git clone https://github.com/isl-org/ZoeDepth.git`)
 Alternatively, you can download the file with gdown (`pip install gdown`): 
 ```bash
 cd checkpoints
