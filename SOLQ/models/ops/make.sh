@@ -8,3 +8,5 @@
 # ------------------------------------------------------------------------------------------------
 
 python setup.py build install
+# You may need to build to --user
+# python setup.py build install --user || exit 1

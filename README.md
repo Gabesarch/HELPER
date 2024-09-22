@@ -3,31 +3,20 @@
 </h1>
 
 <p align="left">
-<!--     <a href="//github.com/allenai/ai2thor-rearrangement/blob/main/LICENSE">
-        <!-- ai2thor-rearrangement wasn't identifiable by GitHub (on the day this was added), so using the same one as ai2thor -->
-<!--         <img alt="License" src="https://img.shields.io/github/license/allenai/ai2thor.svg?color=blue">
-    </a> -->
     <a href="https://helper-agent-llm.github.io/" target="_blank">
         <img alt="Website" src="https://img.shields.io/badge/website-HELPER-orange">
     </a>
-<!--     <a href="//github.com/allenai/ai2thor-rearrangement/releases">
-        <img alt="GitHub release" src="https://img.shields.io/github/release/allenai/ai2thor-rearrangement.svg">
-    </a> -->
     <a href="https://arxiv.org/abs/2310.15127" target="_blank">
         <img src="https://img.shields.io/badge/arXiv-2207.10761-<COLOR>">
     </a>
-<!--     <a href="//arxiv.org/abs/2103.16544" target="_blank">
-        <img src="https://img.shields.io/badge/venue-CVPR 2021-blue">
-    </a> -->
-<!--     <a href="" target="_blank">
-        <img src="https://img.shields.io/badge/video-YouTube-red">
-    </a> -->
-<!--     <a href="https://join.slack.com/t/ask-prior/shared_invite/zt-oq4z9u4i-QR3kgpeeTAymEDkNpZmCcg" target="_blank">
-        <img src="https://img.shields.io/badge/questions-Ask PRIOR Slack-blue">
-    </a> -->
+    <a href="https://arxiv.org/abs/2404.19065" target="_blank">
+        <img alt="HELEPR-X"src="https://img.shields.io/badge/arXiv-2207.10761-<COLOR>">
+    </a>
 </p>
 
-This repo contains code and data for running HELPER. 
+🚀 **Exciting News!** We have newly added support for **ALFRED** and the **Tidy Task**! This major update allows users to run HELPER and HELPER-X on these additional benchmarks. See the 'ALFRED' and 'Tidy Task' branches for more information. Dialfred coming soon!
+
+This repo contains code and data for running HELPER and HELPER-X. This branch is for running HELPER on TEACh. 
 
 ### Contents
 
@@ -49,8 +38,14 @@ This repo contains code and data for running HELPER.
 </ul>
 </div>
 
-## Todo List
-- [ ] Add HELPER-X support for ALFRED, Dialfred, and Tidy Task
+## Running on ALFRED, Dialfred, or Tidy Task
+This branch is for running HELPER and HELPER-X on TEACh. 
+
+Please see the 'ALFRED' branch for instructions on how to run HELPER on ALFRED.
+
+Please see the 'Dialfred' branch for instructions on how to run HELPER on Dialfred. (coming soon)
+
+Please see the 'Tidy Task' branch for instructions on how to run HELPER on Tidy Task. (coming soon)
 
 ## Installation 
 
@@ -59,29 +54,28 @@ This repo contains code and data for running HELPER.
 **(1)** Start by cloning the repository:
 ```bash
 git clone https://github.com/Gabesarch/HELPER.git
+cd HELPER
 ```
 **(1a)** (optional) If you are using conda, create an environment: 
 ```bash
 conda create -n helper python=3.8
 ```
 
-**(2)** Install [PyTorch](https://pytorch.org/get-started/locally/) with the CUDA version you have. For example, run the following for CUDA 11.1: 
+**(2)** Install [PyTorch](https://pytorch.org/get-started/locally/) with the CUDA version you have. We have tested with PyTorch 1.10 and CUDA 11.1: 
 ```bash
 pip install torch==1.10.0+cu111 torchvision==0.11.0+cu111 torchaudio==0.10.0 -f https://download.pytorch.org/whl/torch_stable.html
 ```
-<!-- pip install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html -->
 
 **(3)** Install additional requirements: 
 ```bash
+pip install setuptools==59.8.0 numpy==1.23.1 # needed for scikit-image
 pip install -r requirements.txt
 ```
 
 **(4)** Install [Detectron2](https://detectron2.readthedocs.io/en/latest/tutorials/install.html) (needed for SOLQ detector) with correct PyTorch and CUDA version. 
-E.g. for PyTorch 1.10 & CUDA 11.1:
 ```bash
-python -m pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu111/torch1.10/index.html
+python -m pip install 'git+https://github.com/facebookresearch/detectron2.git'
 ```
-<!-- python -m pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu111/torch1.8/index.html -->
 
 **(5)** Install teach: 
 ```bash
@@ -133,12 +127,6 @@ cd checkpoints
 gdown 1gMe8_5PzaNKWLT5OP-9KKEYhbNxRjk9F
 ```
 
-<!-- 2. Generate the GPT embeddings for retrieval
-```bash
-cd prompt
-python get_embedding_examples.
-``` -->
-
 ## Running TEACh benchmark
 
 ### Running the TfD evaluation
@@ -166,18 +154,18 @@ export OPENAI_API_KEY={KEY}
 To run the agent with all modules and estimated perception on TfD validation unseen, run the following:
 ```bash
 python main.py \
- --mode teach_eval_tfd \
- --split valid_unseen \
- --gpt_embedding_dir ./data/gpt_embeddings \
- --teach_data_dir PATH_TO_TEACH_DATASET \
- --server_port X_SERVER_PORT_HERE \
- --episode_in_try_except \
- --use_llm_search \
- --use_constraint_check \
- --run_error_correction_llm \
- --zoedepth_checkpoint ./checkpoints/ZOEDEPTH-model-00015000.pth \
- --solq_checkpoint ./checkpoints/SOLQ-model-00023000.pth \
- --set_name HELPER_teach_tfd_validunseen
+    --mode teach_eval_tfd \
+    --split valid_unseen \
+    --gpt_embedding_dir ./data/gpt_embeddings \
+    --teach_data_dir PATH_TO_TEACH_DATASET \
+    --server_port X_SERVER_PORT_HERE \
+    --episode_in_try_except \
+    --use_llm_search \
+    --use_constraint_check \
+    --run_error_correction_llm \
+    --zoedepth_checkpoint ./checkpoints/ZOEDEPTH-model-00015000.pth \
+    --solq_checkpoint ./checkpoints/SOLQ-model-00023000.pth \
+    --set_name HELPER_teach_tfd_validunseen
  ```
 Change split to `--split valid_seen` to evaluate validation seen set. 
 
@@ -226,4 +214,13 @@ If you like this paper, please cite us:
                         Fragkiadaki, Katerina",
                         booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2023",
                         year = "2023"}
+```
+
+```
+@inproceedings{sarch2024helperx,
+                        title = "HELPER-X: A Unified Instructable Embodied Agent to Tackle Four Interactive Vision-Language Domains with Memory-Augmented
+                        Language Models",
+                        author = "Sarch, Gabriel and Somani, Sahil and Kapoor, Raghav and Tarr, Michael J and Fragkiadaki, Katerina",
+                        booktitle = "ICLR 2024 LLMAgents Workshop",
+                        year = "2024"}
 ```
