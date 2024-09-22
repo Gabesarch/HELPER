@@ -7,14 +7,17 @@
         <img alt="Website" src="https://img.shields.io/badge/website-HELPER-orange">
     </a>
     <a href="https://helper-agent-llm.github.io/" target="_blank">
-        <img alt="HELPER" src="https://img.shields.io/badge/website-paper-orange">
+        <img alt="HELPER" src="https://img.shields.io/badge/paper-HELPER-blue">
+    </a>
+    <a href="https://helper-agent-llm.github.io/" target="_blank">
+        <img alt="HELPER" src="https://img.shields.io/badge/paper-HELPERX-green">
     </a>
 <!--     <a href="https://arxiv.org/abs/2310.15127" target="_blank">
         <img src="https://img.shields.io/badge/arXiv-2207.10761-<COLOR>">
     </a> -->
-    <a href="https://arxiv.org/abs/2404.19065" target="_blank">
+<!--     <a href="https://arxiv.org/abs/2404.19065" target="_blank">
         <img alt="HELEPR-X"src="https://img.shields.io/badge/arXiv-2207.10761-<COLOR>">
-    </a>
+    </a> -->
 </p>
 
 🚀 **Exciting News!** We have newly added support for **ALFRED** and the **Tidy Task**! This major update allows users to run HELPER and HELPER-X on these additional benchmarks. See the 'ALFRED' and 'Tidy Task' branches for more information. Dialfred coming soon!
