@@ -6,9 +6,12 @@
     <a href="https://helper-agent-llm.github.io/" target="_blank">
         <img alt="Website" src="https://img.shields.io/badge/website-HELPER-orange">
     </a>
-    <a href="https://arxiv.org/abs/2310.15127" target="_blank">
-        <img src="https://img.shields.io/badge/arXiv-2207.10761-<COLOR>">
+    <a href="https://helper-agent-llm.github.io/" target="_blank">
+        <img alt="HELPER" src="https://img.shields.io/badge/website-paper-orange">
     </a>
+<!--     <a href="https://arxiv.org/abs/2310.15127" target="_blank">
+        <img src="https://img.shields.io/badge/arXiv-2207.10761-<COLOR>">
+    </a> -->
     <a href="https://arxiv.org/abs/2404.19065" target="_blank">
         <img alt="HELEPR-X"src="https://img.shields.io/badge/arXiv-2207.10761-<COLOR>">
     </a>
