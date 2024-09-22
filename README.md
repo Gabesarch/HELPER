@@ -209,6 +209,18 @@ To run the Ai2THOR simulator on a headless machine, you must either stat an X-se
 To start an X-server with any of the scripts, you can simply append `--startx` to the arguments. You can specify the X-server port use the `--server_port` argument.
 Alternatively, you can use [Ai2THOR's new headless rendering](https://ai2thor.allenai.org/ithor/documentation/#headless-setup) by appending `--do_headless_rendering` to the arguments.  -->
 
+### References
+
+This project utilizes several repositories and tools. Below are the references to these repositories:
+
+- [TEACh](https://github.com/alexa/teach): TEACh (Task-driven Embodied Agents that Chat) is a dataset and benchmark for training and evaluating embodied agents in interactive environments.
+- [ALFRED](https://github.com/askforalfred/alfred): ALFRED (Action Learning From Realistic Environments and Directives) is a benchmark for learning from natural language instructions in simulated environments.
+- [TIDEE](https://github.com/gabesarch/TIDEE): TIDEE (Task-Informed Dialogue Embodied Environment) is a framework for training embodied agents in task-oriented dialogue settings.
+- [SOLQ](https://github.com/megvii-research/SOLQ): SOLQ (Segmenting Objects by Learning Queries) is a method for object detection and segmentation.
+- [ZoeDepth](https://github.com/isl-org/ZoeDepth): ZoeDepth is a repository for depth estimation models.
+
+Please refer to these repositories for more detailed information and instructions on their usage.
+
 # Citation
 If you like this paper, please cite us:
 ```
