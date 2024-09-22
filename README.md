@@ -20,7 +20,7 @@
     </a> -->
 </p>
 
-🚀 **Exciting News!** We have newly added support for **ALFRED** and the **Tidy Task**! This major update allows users to run HELPER and HELPER-X on these additional benchmarks. See the 'ALFRED' and 'Tidy Task' branches for more information. Dialfred coming soon!
+🚀 **Exciting News!** We have newly added support for **ALFRED** and the **Tidy Task**! This major update allows users to run HELPER and HELPER-X on these additional benchmarks. See the [alfred](https://github.com/Gabesarch/HELPER/tree/alfred) and [tidy_task](https://github.com/Gabesarch/HELPER/tree/tidy_task) branches for more information. Dialfred coming soon!
 
 This repo contains code and data for running HELPER and HELPER-X. This branch is for running HELPER on TEACh. 
 
@@ -47,11 +47,11 @@ This repo contains code and data for running HELPER and HELPER-X. This branch is
 ## Running on ALFRED, Dialfred, or Tidy Task
 This branch is for running HELPER and HELPER-X on TEACh. 
 
-Please see the 'ALFRED' branch for instructions on how to run HELPER on ALFRED.
+Please see the [alfred](https://github.com/Gabesarch/HELPER/tree/alfred) branch for instructions on how to run HELPER on ALFRED.
 
-Please see the 'Dialfred' branch for instructions on how to run HELPER on Dialfred. (coming soon)
+Please see the [tidy_task](https://github.com/Gabesarch/HELPER/tree/tidy_task) branch for instructions on how to run HELPER on Tidy Task. (coming soon)
 
-Please see the 'Tidy Task' branch for instructions on how to run HELPER on Tidy Task. (coming soon)
+Please see the 'dialfred' branch for instructions on how to run HELPER on Dialfred. (coming soon)
 
 ## Installation 
 
