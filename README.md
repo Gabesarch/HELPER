@@ -6,23 +6,23 @@
     <a href="https://helper-agent-llm.github.io/" target="_blank">
         <img alt="Website" src="https://img.shields.io/badge/website-HELPER-orange">
     </a>
-    <a href="https://arxiv.org/abs/2310.15127" target="_blank">
+    <a href="https://helper-agent-llm.github.io/" target="_blank">
+        <img alt="HELPER" src="https://img.shields.io/badge/paper-HELPER-blue">
+    </a>
+    <a href="https://helper-agent-llm.github.io/" target="_blank">
+        <img alt="HELPER" src="https://img.shields.io/badge/paper-HELPERX-green">
+    </a>
+<!--     <a href="https://arxiv.org/abs/2310.15127" target="_blank">
         <img src="https://img.shields.io/badge/arXiv-2207.10761-<COLOR>">
-    </a>
-    <a href="https://arxiv.org/abs/2404.19065" target="_blank">
+    </a> -->
+<!--     <a href="https://arxiv.org/abs/2404.19065" target="_blank">
         <img alt="HELEPR-X"src="https://img.shields.io/badge/arXiv-2207.10761-<COLOR>">
-    </a>
+    </a> -->
 </p>
 
+🚀 **Exciting News!** We have newly added support for **ALFRED** and the **Tidy Task**! This major update allows users to run HELPER and HELPER-X on these additional benchmarks. See the [alfred](https://github.com/Gabesarch/HELPER/tree/alfred) and [tidy_task](https://github.com/Gabesarch/HELPER/tree/tidy_task) branches for more information. Dialfred coming soon!
+
 This repo contains code and data for running HELPER and HELPER-X. This branch is for running HELPER on ALFRED. 
-
-## Running on TEACh, Dialfred, or Tidy Task
-
-This branch is for running HELPER and HELPER-X on ALFRED. 
-
-- For instructions on how to run HELPER on TEACh, please see the 'main' branch.
-- For instructions on how to run HELPER on Tidy Task, please see the 'Tidy Task' branch. (coming soon)
-- For instructions on how to run HELPER on Dialfred, please see the 'Dialfred' branch. (coming soon)
 
 ### Contents
 
